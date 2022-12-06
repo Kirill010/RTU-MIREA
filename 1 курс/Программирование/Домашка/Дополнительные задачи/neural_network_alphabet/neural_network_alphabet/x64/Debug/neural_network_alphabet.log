@@ -1,0 +1,14 @@
+﻿  Source.cpp
+C:\Users\super\source\repos\neural_network_alphabet\neural_network_alphabet\Source.cpp(20,15): warning C4552: "-": результат выражения не используется
+C:\Users\super\source\repos\neural_network_alphabet\neural_network_alphabet\Source.cpp(58,19): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\Users\super\source\repos\neural_network_alphabet\neural_network_alphabet\Source.cpp(84,19): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\Users\super\source\repos\neural_network_alphabet\neural_network_alphabet\Source.cpp(152,19): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\Users\super\source\repos\neural_network_alphabet\neural_network_alphabet\Source.cpp(454,59): warning C4244: аргумент: преобразование "double" в "int", возможна потеря данных
+C:\Users\super\source\repos\neural_network_alphabet\neural_network_alphabet\Source.cpp(457,65): warning C4244: аргумент: преобразование "double" в "int", возможна потеря данных
+C:\Users\super\source\repos\neural_network_alphabet\neural_network_alphabet\Source.cpp(481,57): warning C4244: аргумент: преобразование "double" в "int", возможна потеря данных
+C:\Users\super\source\repos\neural_network_alphabet\neural_network_alphabet\Source.cpp(484,57): warning C4244: аргумент: преобразование "double" в "int", возможна потеря данных
+C:\Users\super\source\repos\neural_network_alphabet\neural_network_alphabet\Source.cpp(487,57): warning C4244: аргумент: преобразование "double" в "int", возможна потеря данных
+C:\Users\super\source\repos\neural_network_alphabet\neural_network_alphabet\Source.cpp(490,57): warning C4244: аргумент: преобразование "double" в "int", возможна потеря данных
+C:\Users\super\source\repos\neural_network_alphabet\neural_network_alphabet\Source.cpp(525,15): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\Users\super\source\repos\neural_network_alphabet\neural_network_alphabet\Source.cpp(603,25): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+  neural_network_alphabet.vcxproj -> C:\Users\super\source\repos\neural_network_alphabet\x64\Debug\neural_network_alphabet.exe

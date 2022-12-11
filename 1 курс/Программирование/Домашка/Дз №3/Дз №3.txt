@@ -1,0 +1,202 @@
+#include <iostream>
+#include <cmath>
+#include <fstream>
+#include <string>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Сортировка букв (сортировка пузырьком)
+    cout << "Введите 30 букв" << endl;
+    string alpha;
+    cin >> alpha;
+    if (alpha.size() >= 30)
+    {
+        alpha = alpha.substr(0, 30);
+        for (int i = 0; i < 30; i++)
+        {
+            for (int j = 0; j < 30 - (i + 1); j++)
+            {
+                if (alpha[j] > alpha[j + 1])
+                {
+                    char b;
+                    b = alpha[j];
+                    alpha[j] = alpha[j + 1];
+                    alpha[j + 1] = b;
+                }
+            }
+        }
+        cout << "Массив в отсортированном виде: " << endl;
+        for (int i = 0; i < 30; i++)
+        {
+            cout << alpha[i] << " ";
+        }
+    }
+    else
+    {
+        cout << "Вы ввели меньше 30 символов!" << endl;
+    }
+
+    return 0;
+}
+
+#include <iostream>
+#include <cmath>
+#include <fstream>
+#include <string>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Копирование файла
+    string x;
+
+    cout << "Введите что-нибудь" << endl;
+    getline(cin, x);
+
+    ofstream ofile("tmp.txt");
+    if (!ofile.is_open())
+    {
+        cout << "Ошибка! Файла нет" << endl;
+    }
+
+    ofile << x;
+    ofile.close();
+
+    ifstream ifile("tmp.txt");
+    string y;
+    while (!ifile.eof())
+    {
+        getline(ifile, y);
+        cout << "Содержимое файла: " << y << endl;
+    }
+
+    ifile.close();
+    
+    return 0;
+}
+
+#include <iostream>
+#include <cmath>
+#include <fstream>
+#include <string>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Фильтр
+    string x;
+    cout << "Введите любые буквы и цифры" << endl;
+    getline(cin, x);
+    ofstream ofile("tmp.txt");
+    if (!ofile.is_open())
+    {
+        cout << "Ошибка! Файла нет" << endl;
+    }
+
+    ofile << x;
+    ofile.close();
+
+    ifstream ifile("tmp.txt");
+    string y;
+    getline(ifile, y);
+
+    ifile.close();
+
+    for (int i = 0; i < y.size(); i++)
+    {
+        if (isdigit(y[i]))
+        {
+            cout << y[i];
+            while (isdigit(y[i + 1]))
+            {
+                i++;
+                cout << y[i];
+            }
+            cout << " ";
+        }
+    }
+
+    return 0;
+}
+
+#include <iostream>
+#include <cmath>
+#include <fstream>
+#include <string>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Заем
+    double S, p, n;
+    cout << "Введите S рублей" << endl;
+    cin >> S;
+    cout << "Введите p процент" << endl;
+    cin >> p;
+    cout << "Введите n лет" << endl;
+    cin >> n;
+    if (S > 0 and p > 0 and n > 0)
+    {
+        double r = p / 100;
+        float m = (S * r * pow((1 + r), n)) / (12 * (pow((1 + r), n) - 1));
+        cout << m << endl;
+    }
+    else
+    {
+        cout << "Вы ввели некорректные цифры" << endl;
+    }
+
+    return 0;
+}
+
+#include <iostream>
+#include <cmath>
+#include <fstream>
+#include <string>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Ссуда
+    double S, m, n;
+    cout << "Введите S рублей" << endl;
+    cin >> S;
+    cout << "Введите m месячной выплаты" << endl;
+    cin >> m;
+    cout << "Введите n лет" << endl;
+    cin >> n;
+    for (double p = 1; p < 100; p++)
+    {
+        double r, m1;
+        r = p / 100;
+        m1 = (S * r * pow((1 + r), n)) / (12 * (pow((1 + r), n) - 1));
+        if (m1 >= m)
+        {
+            cout << "Процент =  " << p << endl;
+            break;
+        }
+    }
+    
+    return 0;
+}

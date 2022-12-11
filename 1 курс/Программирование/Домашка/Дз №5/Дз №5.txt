@@ -1,0 +1,454 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Алгоритм Эратосфена
+    int n;
+    cout << "Введите натуральное число: " << endl;
+    cin >> n;
+    if (n < 1)
+    {
+        cout << "Число должно быть больше 1!" << endl;
+    }
+    vector <int> a;
+    for (int i = 0; i <= n; i++)
+    {
+        a.push_back(i);
+    }
+    int i = 2;
+    while (i < (n - 1))
+    {
+        if (a[i] != 0)
+        {
+            for (int j = (i * 2); j < n; j += i)
+            {
+                a[j] = 0;
+            }
+        }
+        i++;
+    }
+    vector <int> prosto;
+    for (int i = 0; i < a.size(); i++)
+    {
+        if (a[i] != 0 and a[i] >= 2)
+        {
+            prosto.push_back(a[i]);
+        }
+    }
+    if (prosto.size() == 1)
+    {
+        cout << prosto[0] << endl;
+    }
+    else
+    {
+        prosto.pop_back();
+        for (int i = 0; i < prosto.size(); i++)
+        {
+            cout << prosto[i] << " ";
+        }
+    }
+
+    return 0;
+}
+
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Алгоритм Евклида 1 способ
+    int a, b;
+    cout << "Введите a: " << endl;
+    cin >> a;
+    cout << "Введите b: " << endl;
+    cin >> b;
+    if (a == 0)
+    {
+        cout << b << endl;
+    }
+    else if (b == 0)
+    {
+        cout << a << endl;
+    }
+    else if (a == 0 and b == 0)
+    {
+        cout << "Неопределённость" << endl;
+    }
+    else
+    {
+        while (a != b)
+        {
+            if (a > b)
+            {
+                a -= b;
+            }
+            else
+            {
+                b -= a;
+            }
+        }
+        cout << a << endl;
+    }
+
+    return 0;
+}
+
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Алгоритм Евклида 2 способ
+    int a, b;
+    cout << "Введите a: " << endl;
+    cin >> a;
+    cout << "Введите b: " << endl;
+    cin >> b;
+    while (b > 0)
+    {
+        int c = a % b;
+        a = b;
+        b = c;
+    }
+    cout << a << endl;
+
+    return 0;
+}
+
+#include <iostream>
+#include <vector>
+#include <fstream>
+
+using namespace std;
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Файлы (8)
+    cout << "Введите порядок: ";
+    float n(0);
+    cin >> n;
+    vector<vector<float>> a(n, vector <float>(n));
+    vector<vector<float>> b(n, vector <float>(n));
+    vector<vector<float>> c(n, vector <float>(n));
+    vector<vector<float>> e(n, vector <float>(n));
+    vector<vector<float>> m(n, vector <float>(n));
+
+
+    ofstream file1("old.txt");
+    if (!file1.is_open())
+    {
+        cout << "Ошибка! Файла нет" << endl;
+    }
+
+    cout << "Введите элементы матрицы A:" << endl;
+    file1 << "Матрица A:" << endl;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            cin >> a[i][j];
+            file1 << a[i][j] << " ";
+        }
+        file1 << endl;
+    }
+
+    file1 << endl;
+
+    cout << "Введите элементы матрицы B:" << endl;
+    file1 << "Матрица B:" << endl;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            cin >> b[i][j];
+            file1 << b[i][j] << " ";
+        }
+        file1 << endl;
+    }
+
+    file1 << endl;
+
+    cout << "Заполняем матрицу E:" << endl;
+    file1 << "Матрица E:" << endl;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            if (i == j)
+            {
+                e[i][j] = 1;
+                file1 << e[i][j] << " ";
+            }
+            else
+            {
+                e[i][j] = 0;
+                file1 << e[i][j] << " ";
+            }
+        }
+        file1 << endl;
+    }
+
+    file1 << endl;
+
+    cout << "Заполняем матрицу C:" << endl;
+    file1 << "Матрица C:" << endl;
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+            c[i - 1][j - 1] = (float)1 / (i + j);
+            file1 << c[i - 1][j - 1] << " ";
+        }
+        file1 << endl;
+    }
+
+    file1 << endl;
+
+    cout << "Заполняем матрицу M:" << endl;
+    file1 << "Матрица M:" << endl;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            m[i][j] = a[i][j] * (b[i][j] - e[i][j]) + c[i][j];
+            file1 << m[i][j] << " ";
+        }
+        file1 << endl;
+    }
+
+    cout << endl;
+
+    cout << "Итог:" << endl;
+
+    cout << "Выводим матрицу A:" << endl;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            cout << a[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    cout << endl;
+
+    cout << "Выводим матрицу B:" << endl;
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            cout << b[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    cout << endl;
+
+    cout << "Выводим матрицу E:" << endl;
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            cout << e[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    cout << endl;
+
+    cout << "Выводим матрицу C:" << endl;
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            cout << c[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+
+    cout << "Выводим матрицу M:" << endl;
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            cout << m[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    cout << endl;
+
+    return 0;
+}
+
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Ряды (1)
+    int n(0), tmp = 2;
+    double y, ans = 0;
+    double sum = sin(1);
+    cout << "Введите число n:" << endl;
+    cin >> n;
+    for (double i = 1; i <= n; i++)
+    {
+        y = i / sum;
+        sum += sin(tmp);
+        tmp++;
+        ans += y;
+    }
+    cout << ans << endl;
+
+    return 0;
+}
+
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+int fact(int n) /// Ряды (3)
+{
+    int p = 1;
+    for (int i = 1; i <= n; i++)
+    {
+        p *= i;
+    }
+    return p;
+}
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Ряды (3)
+    int n(0), tmp = 2;
+    float y, ans = 1;
+    float sum = sin(2);
+    cout << "Введите число n:" << endl;
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+    {
+        y = fact(i) / sum;
+        tmp += 2;
+        sum += sin(tmp);
+        ans *= y;
+    }
+    cout << ans << endl;
+
+    return 0;
+}
+
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+string get_word(istream& is) /// Обработка текстовых файлов (4 и 6)
+{
+    string w;
+    is >> w;
+    return w;
+}
+
+int main()
+{
+    setlocale(0, "");
+    /// Обработка текстовых файлов (4)
+    ifstream file("tmp.txt");
+    if (!file.is_open())
+    {
+        cout << "Ошибка! Файла нет" << endl;
+        return 0;
+    }
+
+    string word, max_word;
+    int max_len = 0;
+
+    while (file)
+    {
+        word = get_word(file);
+        if (word.size() == 0)
+        {
+            break;
+        }
+        if (word.size() > max_len)
+        {
+            max_len = word.size();
+            max_word = word;
+        }
+    }
+
+    file.close();
+
+    cout << "Самое длинное слово: " << max_word << endl;
+
+    return 0;
+}
+
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+string get_word(istream& is) /// Обработка текстовых файлов (4 и 6)
+{
+    string w;
+    is >> w;
+    return w;
+}
+
+int main()
+{
+    setlocale(0, "");
+    /// Обработка текстовых файлов (6)
+    ifstream file("tmp.txt");
+    if (!file.is_open())
+    {
+        cout << "Ошибка! Файла нет" << endl;
+        return 0;
+    }
+
+    string word, min_word;
+    int min_len = 1000000;
+
+    while (file)
+    {
+        word = get_word(file);
+        if (word.size() == 0)
+        {
+            break;
+        }
+        if (word.size() < min_len)
+        {
+            min_len = word.size();
+            min_word = word;
+        }
+    }
+
+    file.close();
+
+    cout << "Самое короткое слово: " << min_word << endl;
+
+    return 0;
+}

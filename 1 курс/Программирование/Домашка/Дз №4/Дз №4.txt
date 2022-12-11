@@ -1,0 +1,599 @@
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+void square(float a, float b) /// Прямоугольник
+{
+    if (a > 0 and b > 0)
+    {
+        cout << "Площадь прямоугольника: " << a * b << endl;
+    }
+    else
+    {
+        cout << "Числа должны быть больше 0" << endl;
+    }
+}
+
+void triangle(float a, float b, float c) /// Треугольник
+{
+    if ((a > 0 and b > 0 and c > 0) and ((a + b > c and a + c > b and c + b > a)))
+    {
+        float p = (a + b + c) / 2;
+        cout << "Площадь треугольника: " << sqrt(p * (p - a) * (p - b) * (p - c)) << endl;
+    }
+    else
+    {
+        cout << "Некорректные значения" << endl;
+    }
+}
+
+void circle(float r) /// Круг
+{
+    if (r > 0)
+    {
+        float pi = 3.14;
+        cout << "Площадь круга: " << pi * r * r << endl;
+    }
+    else
+    {
+        cout << "Числа должны быть больше 0" << endl;
+    }
+}
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Геометрические фигуры
+    cout << "Какую площадь хотите узнать: прямоугольник - 1, треугольник - 2, круг - 3" << endl;
+    int menu(0);
+    cin >> menu;
+    if (menu == 1)
+    {
+        float a, b;
+        cout << "Введите значения для прямоугольника: a и b" << endl;
+        cin >> a >> b;
+        square(a, b);
+    }
+    else if (menu == 2)
+    {
+        float a1, b1, c1;
+        cout << "Введите значения для треугольника: a1, b1, c1" << endl;
+        cin >> a1 >> b1 >> c1;
+        triangle(a1, b1, c1);
+    }
+    else if (menu == 3)
+    {
+        float r;
+        cout << "Введите значения для круга: r" << endl;
+        cin >> r;
+        circle(r);
+    }
+    else
+    {
+        cout << "Ошибка" << endl;
+    }
+
+
+    return 0;
+}
+
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Файл
+    ofstream ofile("1.txt");
+    if (!ofile.is_open())
+    {
+        cout << "Ошибка! Файла нет" << endl;
+    }
+
+    for (int i = 1; i <= 10; i++)
+    {
+        float x;
+        cout << "Введите " << i << " число: ";
+        cin >> x;
+        ofile << x << '\n';
+    }
+    ofile.close();
+
+    ifstream ifile("1.txt");
+    if (!ifile.is_open())
+    {
+        cout << "Ошибка! Файла нет" << endl;
+    }
+
+    float sum(0);
+    for (int i = 0; i < 10; i++)
+    {
+        float x1;
+        ifile >> x1;
+        sum += x1;
+    }
+    ifile.close();
+
+    cout << "Сумма чисел = " << sum << endl;
+
+    return 0;
+}
+
+#include <iostream>
+
+using namespace std;
+
+int g(int const& m, int const& b, int const& c, int const& i) /// Генератор псевдослучайных чисел
+{
+    if (i == 0)
+    {
+        return 0;
+    }
+
+    return (m * g(m, b, c, i - 1) + b) % c;
+}
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Генератор псевдослучайных чисел
+    int m = 37, b = 3, c = 64, i;
+    cout << "Введите i: ";
+    cin >> i;
+    cout << "Число = " << g(m, b, c, i) << endl;
+
+    return 0;
+}
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    setlocale(0, "");
+
+    /// Задача Умножение матриц
+    /// m = 3 n = 4 k = 4 p = 2
+
+    cout << "Введите таблицу A: " << endl;
+    double a[3][4];
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            cin >> a[i][j];
+        }
+    }
+
+    cout << "Введите таблицу B: " << endl;
+    double b[4][2];
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
+            cin >> b[i][j];
+        }
+    }
+
+    double c[3][2];
+
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
+            c[i][j] = 0; /// обнуление массива
+        }
+    }
+
+    for (int i = 0; i < 3; i++)
+    {
+        /// процесс умножения матриц
+        for (int j = 0; j < 2; j++)
+        {
+            for (int k = 0; k < 4; k++)
+            {
+                c[i][j] += (a[i][k] * b[k][j]);
+            }
+        }
+    }
+
+    /// вывод матрицы С
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
+            cout << c[i][j] << "\t";
+        }
+        cout << endl;
+    }
+
+    int maxsellermoney(0);
+    double maxs1(0);
+    for (int i = 0; i < 3; i++)
+    {
+        double tmp1(0);
+        for (int j = 0; j < 2; j++)
+        {
+            tmp1 += c[i][j];
+        }
+        if (tmp1 > maxs1)
+        {
+            maxsellermoney = i; /// номер продавца, который больше всего денег выручил с продажи
+            maxs1 = tmp1;
+        }
+    }
+
+    int minsellermoney(0);
+    double mins1(10000000);
+    for (int i = 0; i < 3; i++)
+    {
+        double tmp2(0);
+        for (int j = 0; j < 2; j++)
+        {
+            tmp2 += c[i][j];
+        }
+        if (tmp2 < mins1)
+        {
+            minsellermoney = i; /// номер продавца, который меньше всего денег выручил с продажи
+            mins1 = tmp2;
+        }
+    }
+
+    int maxsellercom(0);
+    double maxs2(0);
+    for (int i = 0; i < 3; i++)
+    {
+        double tmp3 = c[i][1];
+        if (tmp3 > maxs2)
+        {
+            maxsellercom = i; /// номер продавца, который больше всего получил комиссионных
+            maxs2 = tmp3;
+        }
+    }
+
+    int minsellercom(0);
+    double mins2(10000000);
+    for (int i = 0; i < 3; i++)
+    {
+        double tmp4 = c[i][1];
+        if (tmp4 < mins2)
+        {
+            minsellercom = i; /// номер продавца, который меньше всего получил комиссионных
+            mins2 = tmp4;
+        }
+    }
+
+
+    double allmoney(0), allcom(0), alls(0);
+    for (int i = 0; i < 3; i++)
+    {
+        allmoney += c[i][0];
+        allcom += c[i][1];
+        alls += (c[i][0] + c[i][1]);
+    }
+
+    cout << "1 - " << "Больше у " << maxsellermoney + 1 << " продавца" << endl;
+    cout << "1 - " << "Меньше у " << minsellermoney + 1 << " продавца" << endl;
+    cout << "2 - " << "Больше у " << maxsellercom + 1 << " продавца" << endl;
+    cout << "2 - " << "Меньше у " << minsellercom + 1 << " продавца" << endl;
+    cout << "3 - " << "Общая сумма денег: " << allmoney << " вырученных за проданные товары" << endl;
+    cout << "4 - " << "Всего комиссионных: " << allcom << " получили продавцы" << endl;
+    cout << "5 - " << "Общая сумма денег: " << alls << " прошедших через руки продавцов" << endl;
+
+    return 0;
+}
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Былая слава
+    cout << "Былая слава 1912 года" << endl;
+    cout << endl;
+    string mas[6][40];
+    for (int i = 0; i < 6; i++)
+    {
+        for (int j = 0; j < 40; j++)
+        {
+            if (i < 6)
+            {
+                if (i % 2 == 0 and j < 8)
+                {
+                    mas[i][j] = "* ";
+                }
+                if (i % 2 == 1 and j < 8)
+                {
+                    mas[i][j] = "* ";
+                }
+                if (i % 2 == 0 and j > 8)
+                {
+                    mas[i][j] = "-";
+                }
+                if (i % 2 == 1 and j > 8)
+                {
+                    mas[i][j] = "-";
+                }
+            }
+            cout << mas[i][j];
+        }
+        cout << endl;
+    }
+
+    string mas1[6][47];
+    for (int i = 0; i < 6; i++)
+    {
+        for (int j = 0; j < 47; j++)
+        {
+            mas1[i][j] = "-";
+            cout << mas1[i][j];
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int roman(char x)
+{
+    switch (x)
+    {
+        case 'I':
+            return 1;
+        case 'V':
+            return 5;
+        case 'X':
+            return 10;
+        case 'L':
+            return 50;
+        case 'C':
+            return 100;
+        case 'D':
+            return 500;
+        case 'M':
+            return 1000;
+        default:
+            return 0;
+            break;
+    }
+}
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Автоматный распознаватель
+    string s;
+    cout << "Введите римскую цифру: ";
+    cin >> s;
+    vector <char> znak;
+    int x = 0, tmp1 = 0;
+    for (int i = s.size() - 1; i >= 0; i--)
+    {
+        int tmp = roman(s[i]);
+        if (tmp >= tmp1)
+        {
+            tmp1 = tmp;
+        }
+        if (tmp == tmp1)
+        {
+            x += tmp;
+            znak.push_back('1');
+        }
+        else
+        {
+            znak.push_back('0');
+            x -= tmp;
+        }
+    }
+    bool flag = 1;
+    if (znak.size() > 2)
+    {
+        for (int j = 1; j < znak.size() - 1; j++)
+        {
+            if (znak[j - 1] == '1' and znak[j] == '0' and znak[j + 1] == '0')
+            {
+                flag = 0;
+            }
+            if (flag == 0)
+            {
+                cout << "Ошибка" << endl;
+            }
+            else
+            {
+                cout << x << endl;
+                for (int k = 0; k < znak.size(); k++)
+                {
+                    /// cout << znak[k] << " ";
+                }
+            }
+        }
+    }
+    else
+    {
+        cout << x << endl;
+    }
+
+    return 0;
+}
+
+#include <iostream>
+
+using namespace std;
+
+void sign(float x)
+{
+    if (x > 0)
+    {
+        cout << "1" << endl;
+    }
+    else if (x == 0)
+    {
+        cout << "0" << endl;
+    }
+    else
+    {
+        cout << "-1" << endl;
+    }
+}
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Знак числа
+    float x(0);
+    cin >> x;
+    sign(x);
+
+    return 0;
+}
+
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Синусоида
+    char s[100][200];
+    for (int i = 0; i < 40; i++)
+    {
+        for (int j = 0; j < 120; j++)
+        {
+            s[i][j] = '=';
+        }
+    }
+
+    for (int i = 0; i < 120; i++)
+    {
+        s[40 / 2][i] = '-';
+    }
+
+    for (int i = 0; i < 40; i++)
+    {
+        s[i][120 / 2 - 2] = '|';
+    }
+
+    int y;
+    for (int i = -120 / 2; i < 120 / 2; i++)
+    {
+        if (i == 0 or i == -31 or i == 31 or i == 1)
+        {
+            continue;
+        }
+        int b(0);
+        if (i > -31)
+        {
+            b = 1;
+        }
+        if (i > 0)
+        {
+            b = 3;
+        }
+        if (i > 31)
+        {
+            b = 4;
+        }
+        y = sin((float) i / 10) * 10;
+        s[y + 40 / 2][i + 120 / 2 - b] = '0';
+    }
+
+    for (int i = 0; i < 40; i++)
+    {
+        for (int j = 0; j < 120; j++)
+        {
+            cout << s[i][j];
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
+
+#include <iostream>
+#include <cmath>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+int main()
+{
+    setlocale(0, "");
+    /// Задача Системы счисления
+    string number;
+    cout << "Введите число: ";
+    cin >> number;
+    cout << "Введите основание числа: ";
+    int base(0);
+    cin >> base;
+    cout << "Введите основание, в которую хотите перевести: ";
+    int new_base(0);
+    cin >> new_base;
+    int number_10(0);
+    for (int i = 0; i < number.size(); i++)
+    {
+        char s = number[i];
+        int n(0);
+        if (isdigit(s))
+        {
+            n = s - '0';
+        }
+        else
+        {
+            n = s - 'A' + 10;
+        }
+
+        if (n >= base)
+        {
+            cout << "Ошибка!" << endl;
+            return 0;
+        }
+
+        number_10 += n * int(pow(base, number.size() - 1 - i));
+    }
+
+    string new_number;
+    while (number_10 > 0)
+    {
+        int ost = number_10 % new_base;
+        string c;
+        if (ost > 9)
+        {
+            c = 'A' + ost - 10;
+        }
+        else
+        {
+            c = to_string(ost);
+        }
+        new_number += c;
+
+        number_10 /= new_base;
+    }
+
+    reverse(new_number.begin(), new_number.end());
+    if (new_number.size() == 0)
+    {
+        cout << 0 << endl;
+    }
+    else
+    {
+        cout << "Ответ: " << new_number << endl;
+    }
+
+    return 0;
+}

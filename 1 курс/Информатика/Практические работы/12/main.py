@@ -10,28 +10,28 @@ def bubble_sort(tmp):
     return tmp
 
 
-numbers = ["1", "2", "3", "4", "5", "6", "7", "8", '9']
-print("Введите размер матрицы")
-M = int(input())  # размер матрицы M*M от 2 до 5
-while (M < 2 or M > 5):
+numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+print("Какой диапазон для размера матрицы?")
+M = input()  # размер матрицы M*M от 2 до 5
+while (M not in ["2", "3", "4", "5"]):
     print("Размер матрицы должен быть от 2 до 5!")
-    M = int(input())
+    M = input()
 matrix = []  # объявление матрицы
 tmp = []  # временный массив
 print("Введите способ ввода матрицы (1 - случайные, 2 - пользователь вводит с клавиатуры)")
-variant = int(input())  # пользователь выбирает вариант создания матрицы
-while (variant != 1 and variant != 2):
+variant = input()  # пользователь выбирает вариант создания матрицы
+while (variant not in ["1", "2"]):
     print("1 или 2!")
-    variant = int(input())
-if (variant == 1):
-    for i in range(M):
+    variant = input()
+if (int(variant) == 1):
+    for i in range(int(M)):
         matrix.append([])
-        for j in range(M):
+        for j in range(int(M)):
             matrix[i].append(random.randint(1, 100))
 
     print()
-    for i in range(M):  # вывод изначальной матрицы
-        for j in range(M):
+    for i in range(int(M)):  # вывод изначальной матрицы
+        for j in range(int(M)):
             print(matrix[i][j], end=" ")
         print()
 
@@ -42,7 +42,7 @@ if (variant == 1):
     bubble_sort(tmp)  # сортируем элементы
 
     k = 0
-    for i in range(len(matrix)):
+    for i in range(len(matrix)):  # сортированные элементы закидываю в матрицу
         for j in range(len(matrix) - i):
             matrix[i][j] = tmp[k]
             k += 1
@@ -50,9 +50,9 @@ if (variant == 1):
                 break
 
 else:
-    for i in range(M):  # наполнение матрицы пользовательскими числами
+    for i in range(int(M)):  # наполнение матрицы пользовательскими числами
         p = []
-        for j in range(M):
+        for j in range(int(M)):
             print(f"Введите значения [{i};{j}]")
             qtty = input()
             c = 0
@@ -69,14 +69,14 @@ else:
                 else:
                     c = 0
                 if (c == 0):
-                    print("Некорректное значение")
+                    print("Введите значение от 0 до 100!")
                     qtty = input()
             p.append(int(qtty))
         matrix.append(p)
 
     print()
-    for i in range(M):  # вывод изначальной матрицы
-        for j in range(M):
+    for i in range(int(M)):  # вывод изначальной матрицы
+        for j in range(int(M)):
             print(matrix[i][j], end=" ")
         print()
 
@@ -87,21 +87,21 @@ else:
     bubble_sort(tmp)  # сортируем элементы
 
     k = 0
-    for i in range(len(matrix)):
+    for i in range(len(matrix)):  # сортированные элементы закидываю в матрицу
         for j in range(len(matrix) - i):
             matrix[i][j] = tmp[k]
             k += 1
             if (k == len(tmp)):
                 break
 
-for i in range(M):  # оставшиеся не сортированные элементы умножаю на минус один
-    for j in range(M):
-        if (i > (M - j - 1)):
+for i in range(int(M)):  # оставшиеся не сортированные элементы умножаю на минус один
+    for j in range(int(M)):
+        if (i > (int(M) - j - 1)):
             matrix[i][j] = matrix[i][j] * (-1)
 
 print()
 
-for i in range(M):  # вывод конечной матрицы
-    for j in range(M):
+for i in range(int(M)):  # вывод конечной матрицы
+    for j in range(int(M)):
         print(matrix[i][j], end=" ")
     print()

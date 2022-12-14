@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2022-12-13T17:48:01.148Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 YaBrowser/22.11.2.807 Yowser/2.5 Safari/537.36" etag="1M8YdEnn86K1vB8iBhMZ" version="20.6.2" type="github" pages="6">
+<mxfile host="app.diagrams.net" modified="2022-12-14T17:15:18.982Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 YaBrowser/22.11.2.807 Yowser/2.5 Safari/537.36" etag="PBpSEsS62lZmiBG_bqhZ" version="20.6.2" type="github" pages="6">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Страница 1">
-    <mxGraphModel dx="1422" dy="781" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1038" dy="567" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
@@ -67,14 +67,14 @@
         <mxCell id="lGB9nkkbmbxpea_cKSjL-27" value="Ввод: M &lt;br&gt;# размер матрицы M*M от 2 до 5" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Times New Roman;fontSize=14;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="220" y="790" width="280" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="3LPEXveDwYEBdxst3iRN-0" value="A" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontFamily=Times New Roman;fontSize=14;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+        <mxCell id="3LPEXveDwYEBdxst3iRN-0" value="A" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontFamily=Times New Roman;fontSize=14;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="320" y="960" width="80" height="80" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
   <diagram id="S_AXdi6OGKMSA_9-iiaM" name="Страница 2">
-    <mxGraphModel dx="1778" dy="976" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1038" dy="567" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -154,7 +154,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="kAuAYdqbR3cbgCDaEKg-" name="Страница 3">
-    <mxGraphModel dx="3197" dy="1302" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2048" dy="667" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -511,24 +511,22 @@
         <mxCell id="LSSBEyvuUVkhGtvk71jV-32" value="c = 0" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=14;" parent="1" vertex="1">
           <mxGeometry x="1907" y="1435" width="80" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="LSSBEyvuUVkhGtvk71jV-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=14;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="LSSBEyvuUVkhGtvk71jV-33" target="jG5xi0Q8IEBn3WY3W2ey-2" edge="1">
+        <mxCell id="LSSBEyvuUVkhGtvk71jV-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=14;entryX=0.487;entryY=-0.017;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="LSSBEyvuUVkhGtvk71jV-33" target="jG5xi0Q8IEBn3WY3W2ey-2" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1787" y="1675" as="targetPoint" />
+            <mxPoint x="1790" y="1680" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="1787" y="1615" />
+              <mxPoint x="1786" y="1615" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="LSSBEyvuUVkhGtvk71jV-33" value="Если c == 0" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;fontFamily=Times New Roman;fontSize=14;" parent="1" vertex="1">
           <mxGeometry x="1857" y="1555" width="180" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="jG5xi0Q8IEBn3WY3W2ey-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=14;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="jG5xi0Q8IEBn3WY3W2ey-2" target="jG5xi0Q8IEBn3WY3W2ey-8" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1787" y="1825" as="targetPoint" />
-          </mxGeometry>
+        <mxCell id="BneF3Ei9Fwy7SGBJZoy1-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.537;entryY=0.021;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="jG5xi0Q8IEBn3WY3W2ey-2" target="jG5xi0Q8IEBn3WY3W2ey-8">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="jG5xi0Q8IEBn3WY3W2ey-2" value="Вывод: &quot;Некорректное значение&quot;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Times New Roman;fontSize=14;" parent="1" vertex="1">
-          <mxGeometry x="1667" y="1719" width="240" height="60" as="geometry" />
+        <mxCell id="jG5xi0Q8IEBn3WY3W2ey-2" value="Вывод: &quot;Введите значение от 0 до 100!&quot;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Times New Roman;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="1660" y="1719" width="260" height="60" as="geometry" />
         </mxCell>
         <mxCell id="jG5xi0Q8IEBn3WY3W2ey-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=14;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="jG5xi0Q8IEBn3WY3W2ey-8" target="YBsStQ5Gke-joKO1x2tq-1" edge="1">
           <mxGeometry relative="1" as="geometry">

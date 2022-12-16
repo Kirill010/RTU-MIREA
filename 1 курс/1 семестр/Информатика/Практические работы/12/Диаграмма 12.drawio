@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2022-12-16T06:24:09.259Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 YaBrowser/22.11.3.818 Yowser/2.5 Safari/537.36" etag="xAAX14U3V9U7_Fbk82DJ" version="20.7.3" type="github" pages="8">
+<mxfile host="app.diagrams.net" modified="2022-12-16T06:29:10.338Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 YaBrowser/22.11.3.818 Yowser/2.5 Safari/537.36" etag="FUqTZDTUcwU88zVhAWKK" version="20.7.3" type="github" pages="8">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Страница 1">
     <mxGraphModel dx="1434" dy="783" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -144,7 +144,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="svGBdCOZW8eRL4nAfhc7" name="Страница 3">
-    <mxGraphModel dx="1687" dy="921" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2049" dy="1119" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -179,7 +179,7 @@
           <mxGeometry x="300" y="190" width="40" height="30" as="geometry" />
         </mxCell>
         <mxCell id="JfKkdEd9zAQhm2vbz7kG-7" value="Нет" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=14;fontFamily=Times New Roman;" parent="1" vertex="1">
-          <mxGeometry x="827" y="190" width="50" height="30" as="geometry" />
+          <mxGeometry x="777" y="190" width="50" height="30" as="geometry" />
         </mxCell>
         <mxCell id="JfKkdEd9zAQhm2vbz7kG-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Times New Roman;fontSize=14;" parent="1" source="JfKkdEd9zAQhm2vbz7kG-10" edge="1">
           <mxGeometry relative="1" as="geometry">
@@ -698,7 +698,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="hoa6O5jEQ1zRNqjXqkMP" name="Страница 6">
-    <mxGraphModel dx="869" dy="475" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1793" dy="979" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />

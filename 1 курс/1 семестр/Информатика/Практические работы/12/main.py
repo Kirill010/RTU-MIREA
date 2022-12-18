@@ -1,5 +1,5 @@
 import random  # подключение библиотеки для реализации случайных чисел
-import sys
+import keyboard  # подключение модуля для блокировки клавиш
 
 
 def bubble_sort(tmp):
@@ -10,6 +10,8 @@ def bubble_sort(tmp):
     return tmp
 
 
+keyboard.block_key("ctrl")
+keyboard.block_key("alt")
 numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 print("Какой диапазон для размера матрицы?")
 M = input()  # размер матрицы M*M от 2 до 5
@@ -30,6 +32,7 @@ if (int(variant) == 1):
             matrix[i].append(random.randint(1, 100))
 
     print()
+    print("Вывод изначальной матрицы")
     for i in range(int(M)):  # вывод изначальной матрицы
         for j in range(int(M)):
             print(matrix[i][j], end=" ")
@@ -75,6 +78,7 @@ else:
         matrix.append(p)
 
     print()
+    print("Вывод изначальной матрицы")
     for i in range(int(M)):  # вывод изначальной матрицы
         for j in range(int(M)):
             print(matrix[i][j], end=" ")
@@ -100,7 +104,7 @@ for i in range(int(M)):  # оставшиеся не сортированные 
             matrix[i][j] = matrix[i][j] * (-1)
 
 print()
-
+print("Вывод конечной матрицы")
 for i in range(int(M)):  # вывод конечной матрицы
     for j in range(int(M)):
         print(matrix[i][j], end=" ")

@@ -1,5 +1,6 @@
 import random  # подключение библиотеки для реализации случайных чисел
 import keyboard  # подключение модуля для блокировки клавиш
+import os # подключаем модуль для того, чтобы в конце программа могла ждать, пока не будет нажата любая клавиша
 
 
 def bubble_sort(tmp):
@@ -109,3 +110,4 @@ for i in range(int(M)):  # вывод конечной матрицы
     for j in range(int(M)):
         print(matrix[i][j], end=" ")
     print()
+os.system("pause")

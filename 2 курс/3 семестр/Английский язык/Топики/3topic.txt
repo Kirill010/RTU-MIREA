@@ -1,6 +1,5 @@
-I would like to tell you about computer hardware. The processor is the brain of the device, it receives commands from the user, does calculations and provides results. 
-The power and performance of a computer are partially determined by the speed of its processor. The processor clock frequency determines the minimum amount of time for which the processor performs some conditional elementary operation, and is measured in megahertz. The higher the clock frequency, the faster the CPU runs. 
-The processor architecture is determined by the number of cores. Each core in the processor can independently perform various tasks.
-The programs and data which pass through the processor must be loaded into the main memory in order to be processed. Therefore, when the user runs a program, the CPU looks for it on the hard disk and transfers a copy into the RAM chips. RAM (random access memory) is volatile - that is, its information is lost when the computer 
-is turned off. However, ROM (read only memory) is non-volatile, containing instructions and routines for the basic operations of the CPU. The BIOS (basic input/output system) uses ROM to control communication with peripherals. RAM capacity can be expanded by adding extra chips.
-The main circuit board inside your system is called the motherboard and contains the processor, the memory chips, expansions slots, and controllers for peripherals, connected by buses - electrical channels which allow devices inside the computer to communicate with each other.
+I would like to tell you about computer hardware. The processor is the brain of the device that performs calculations and outputs results. 
+The power is determined by the speed of processor.
+The processor architecture is determined by the number of cores. Each processor core can perform different tasks.
+To process the program and the data must be loaded into the main memory. RAM (random access memory) is volatile and stores data that is used by the computer. However, the ROM (read-only memory) is non-volatile. The BIOS (basic Input/Output system) uses ROM to control interaction with peripheral devices.
+The main printed circuit board inside your system, called the motherboard, connects all computer components and is the "skeleton" of the computer.

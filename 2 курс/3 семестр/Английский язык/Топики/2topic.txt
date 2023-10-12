@@ -1,0 +1,14 @@
+I would like to tell you about the types of computers.
+A desktop PC is a computer that has its own processor, monitor, keyboard, mouse and system unit. 
+The computer is used in one place.
+A laptop is a lightweight computer that you can easily transport. 
+It can run as fast as a desktop PC. 
+Laptops have a touchpad built into the keyboard.
+A tablet is a highly portable PC that has a touch screen. It combines the best aspects of smartphones and laptop PCs. 
+A supercomputer is the fastest computer on Earth, which can perform billions and trillions of calculations per second. 
+The supercomputer is ideal for scientific and engineering purposes.
+The mainframe can process and store large amounts of data. 
+It supports multiple users and can support multiple processes than a PC. 
+The central system is a large server connected to hundreds of terminals over the network. 
+A server is a central computer that stores data for many other computers. 
+As a rule, they have a lot of storage space, memory and computing power than a regular workstation.

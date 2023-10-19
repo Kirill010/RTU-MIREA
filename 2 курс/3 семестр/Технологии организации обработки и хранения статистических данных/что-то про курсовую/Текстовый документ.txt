@@ -1,0 +1,28 @@
+It is generally seen that higher weight and old Age are two major factor causing diabetes.
+
+Diabetic patients have Higher glucose rate and higher weight as compared to Non -diabetic ones
+
+The Age is not directly realted but higher gluose level in oldies can be a cause of Diabetes in them, also the males of age 40 to 80 have higher blood glucose level than females.
+
+The BP is not directly related to the diabetes, as patients have highest BP are Found to be Non-diabetic.
+
+Diabetic patients have lower HDL-Cholesterol
+
+Females being diabetic are more than the males being diabetic.
+
+Higher cholesterol is seen in the patients having diabetes
+
+
+
+As we have seen in the above plots as well,Glucose is direclty realted to the cause of diabetes. The good cholestrol or HDL-cholestrol is negativey related,weight,age and cholestrol are also realted but to a very smaller extent, the male patients have higher Glucose level but out of total patients,female patients were more diabetic than males,but the difference was very small.
+
+Features for building the model
+cholesterol
+glucose
+hdl_chol
+age
+gender
+weight
+systolic_bp
+diastolic_bp
+diabetes - The target

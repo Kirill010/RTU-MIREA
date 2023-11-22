@@ -1,0 +1,19 @@
+I would like to tell you about the primary storage.
+Storage media are classified into primary and secondary. 
+Primary storage can be volatile or non volatile. 
+Examples are RAM and cache memory, which lose data, when the computer turns off.
+The main function of RAM is to provide quick access to the CPU. 
+The amount of RAM determines the speed and performance of the computer. 
+If your computer system has too little RAM, it will slow down the work of the computer.
+ROM can save data when the computer is turned off. 
+There are several types of read only memory: 
+1. MROM (Masked read-only memory);
+2. PROM (Programmable read-only memory);
+3. EPROM (Erasable programmable read-only memory);
+4. EEPROM (Electrically erasable programmable read-only memory);
+5. FLASH ROM.
+Secondary storage devices are used to keep data by the long-term basis. 
+Sometimes they are called auxiliary storage. 
+They are non-volatile and do not have direct access to the CPU. 
+They work much slower than the main storage, but have a much larger capacity.
+Examples are hard disk drives and solid state drives.

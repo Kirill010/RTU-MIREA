@@ -1,0 +1,21 @@
+I would like to tell you about the secondary storage.
+The secondary storage are hard disk drives (HDD) and solid-state drives (SSD).
+There are several types of media. For example: magnetic, optical, flash memory.
+Magnetic devices store data by magnetizing particles on a disk or tape. 
+The hard drive must be treated carefully.
+Hard drives are sensitive to vibration during operation.
+It consists of plates that are made up of a magnetic material.
+However, a hard drive can store more data and retrieve information faster.
+Optical storage is a type of storage in which data is read using a laser. 
+Optical storage was used in variety of forms. For example: the CD, the DVD, The Blu-ray.
+One of advantages is durability. 
+Among disadvantages are speed and capacity. 
+Nowadays, the Internet is used to transmit information.
+
+
+
+
+
+
+
+

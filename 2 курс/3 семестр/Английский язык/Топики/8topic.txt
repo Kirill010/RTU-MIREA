@@ -1,0 +1,18 @@
+I would like to tell you about the classifications of networks and network hardware.
+Networks can be classified according to different criteria.
+LANs cover a small area, MANs span an entire city, WANs cover a country or a continent.
+There are two types of network architecture: peer-to-peer and client-server.
+In a client-server system, one computer acts as a server. 
+In a peer-to-peer system, all the computers share files and peripherals.
+There are network topologies. For example, the bus topology, ring topology, star topology, tree topology and hybrid topology. 
+Bus topology: all nodes are connected to a single cable.
+Star topology: all nodes are connected to a central node.
+Ring topology: each device is connected with its neighboring node.
+Tree topology: all the computers are connected like the branches of a tree.
+Hybrid topology: this type includes a mix of bus topology, ring topology, star topology, and tree topology. 
+Wired networks are considered faster and more reliable, than wireless networks. 
+In computer networks, we have a variety of network devices such as modems, routers, hubs and switches.
+A modem transmits data over cable or over a wireless network.
+A router is a device that connects two or more packet-switched networks.
+A network hub is a node that broadcasts data to every computer.
+A network switch is similar a network hub, but it can inspects packets, determines source.

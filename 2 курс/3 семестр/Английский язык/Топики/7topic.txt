@@ -1,0 +1,16 @@
+I would like to tell you about the OSI model.
+OSI is a reference model that gives an idea of how data is transmitted over networks. 
+This conceptual model was adopted in 1984 by International Organization for Standardization and has been widely used ever since by IT networking professionals.
+This model is often used for troubleshooting if a network problem occurs. 
+The OSI model consists of seven layers.
+There are the application layer, the presentation layer, the session layer, the transport layer, the network layer, the data link layer and the physical layer.
+With the help of application layer protocols, a user can perform activities, like sending emails, transferring files.
+It also manages encryption, and compresses the data it receives from the application layer.
+The session layer creates communication channels. It has to ensure that the sessions are open, functioning and long enough to transfer the data. After all the data is transferred, it closes sessions.
+The transport layer is responsible for transferring data, providing error-checking mechanisms and data flow control. 
+This layer breaks the data it gets from the session layer into transportable segments,
+creates checksum tests – mathematical sums based on the contents of data – that can be used later to determine if the data was scrambled. 
+The transport layer also provides the acknowledgement of the successful data transmission and re-transmits the data if an error is found.
+The network layer ensures the transmission of data from one host to the other located in a different network.
+The data link layer manages data transfer between two devices on the same network. It is also responsible for flow control and error control in intra-network communication.
+The physical layer is the lowest layer of the OSI model and it is responsible for transmitting raw bits of data from one node to the other over physical cable or wireless connection.

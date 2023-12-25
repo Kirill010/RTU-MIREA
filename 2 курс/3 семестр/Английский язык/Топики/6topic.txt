@@ -1,0 +1,13 @@
+I would like to tell you about the software.
+Software is a set of programs used to operate a computer system that performs specific tasks. 
+There are system software and application software. 
+System Software is general-purpose software, which is used to operate computer hardware. 
+It acts as an interface between application programs and computer hardware. 
+System software is designed to manage the system resources and provide a platform for application software to run. 
+System software is usually written in low-level languages, like assembly languages.
+Application software is designed to help the user perform a specific task.
+Application software is usually written in high-level languages, like Java or C++. 
+As a user interacts with an application program on the screen, the application program communicates with the operating system and the operating system communicates with the computer hardware.
+The operating system is running in the background.
+The most popular operating systems are Microsoft Windows and Mac OS.
+

@@ -1,0 +1,10 @@
+I would like to tell you about the search engines.
+A search engine allows users to extract requested information on the Internet. 
+Crawler-based search engines create lists using a special program to search for new content.
+When the search robot finds a new website by a link, it scans and transmits it on for processing.
+Indexing is performed by identifying words and expressions.
+Ranking is the sorting of sites. 
+Search engines compare the search string with indexed pages from the database to provide content.
+Human-powered directories depend on human editors to compile their lists. 
+A meta search system does not have its own database. 
+It sends user requests and collects the best results into one common list.

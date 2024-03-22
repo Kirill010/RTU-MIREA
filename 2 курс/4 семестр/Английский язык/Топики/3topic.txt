@@ -1,0 +1,11 @@
+I would like to tell you about the Computer Languages.
+Computers can't use natural language. 
+They can understand is machine code. 
+Any other code written in assembly language or high-level language must be translated into machine code. 
+The difference between high-level and low-level languages is that high-level languages are good for writing programs, web applications, and mobile applications. 
+OOP stands for Object-oriented programming. All programs consist of objects is "encapsulation".
+A class is a drawing of a car, and instances of this class are of a specific car. 
+The second feature is inheritance. 
+This is a concept in which parent classes pass properties to child classes.
+The third principle is polymorphism. 
+Different objects can receive the same instructions, but process them differently.

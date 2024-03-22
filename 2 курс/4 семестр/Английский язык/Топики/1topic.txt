@@ -1,0 +1,13 @@
+I would like to tell you about the Internet.
+DSL is a high-speed Internet connection, that uses the telephone lines.
+The most commonly used DSL technology is ADSL.
+Cable Internet is a technology that uses a cable modem with an isolated coaxial cable. 
+Fiber-optic Internet uses fiber-optic cables instead of copper wires. 
+These cables transmit data to and from a computer using light energy and can transmit data over long distances.
+Fiber-optic cables transfer data faster than copper wiring.
+Today, wireless technologies include Wi-Fi, cellular communications and satellite Internet.
+Wi-Fi is used for local area networks.
+Satellite Internet allows the user to access the network through orbit.
+It is a good solution for rural areas.
+A cellular network is a communication network distributed over land areas.
+Packet switching is the main basis for data transmission in computer networks around the world.

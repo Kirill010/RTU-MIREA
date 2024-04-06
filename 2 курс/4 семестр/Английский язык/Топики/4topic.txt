@@ -1,1 +1,9 @@
 I would like to tell you about the web design.
+The main steps of creating a website include planning, designing, development, testing, and launching. 
+The main benefits of website builders is that they create websites quickly and easily without the need for programming knowledge.
+Interface development focuses on the visual aspects of a website. 
+Three different tools are used to create these elements – HTML, CSS, and JavaScript. 
+Interface development includes behind-the-scenes website features such as databases, servers, and applications. 
+The backend developer works with different databases (SQLite, MySQL, MongoDB), different servers (Nginx and Apache).
+SEO is the search engine promotion of a website.
+It helps to increase visibility on the Internet.

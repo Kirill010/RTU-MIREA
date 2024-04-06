@@ -1,31 +1,13 @@
 I would like to tell you about the malware and cybercrime.
-
-
-
-Malware (malicious software) are programs designed to infiltrate or damage your computer, for example viruses, worms, Trojans and spyware. 
-A virus can enter a PC via an infected USB flash drive or via the Internet. 
-A worm is a self-copying program; it replicates itself and sends a copy to everyone in an address book. 
-A Trojan horse is disguised as a useful program. 
-Spyware collects information from your PC without your consent. 
-Unlike viruses and Trojan horses, a worm does not need to attach itself to another program.
-There are many specific types of viruses that one needs to guard against. 
-One dangerous type of virus is an overwriting virus. 
-These viruses not only erase malicious code, they also replace the information. 
-They damage important information, sometimes rendering a computer entirely unusable. 
-Another common virus is a resident virus. 
-They stay dormant until a particular event activates them.
-DDoS attack is an attack where hackers overload networks and servers with traffic so that computer systems are unable to keep up with legitimate needs.
-
-Вредоносные программы (malware software) - это программы, предназначенные для проникновения или повреждения вашего компьютера, например вирусы, черви, трояны и шпионские программы. 
-Вирус может проникнуть на компьютер через зараженный USB-накопитель или через Интернет. 
-Червь - это самокопирующаяся программа; он копирует себя и рассылает копии всем пользователям адресной книги. 
-Троянский конь маскируется под полезную программу. 
-Шпионское ПО собирает информацию с вашего компьютера без вашего согласия. 
-В отличие от вирусов и троянских коней, червю не нужно подключаться к другой программе.
-Существует много специфических типов вирусов, от которых нужно защищаться. 
-Одним из опасных типов вирусов является перезаписывающий вирус. 
-Эти вирусы не только стирают вредоносный код, но и заменяют информацию. 
-Они повреждают важную информацию, иногда полностью выводя компьютер из строя. 
-Еще одним распространенным вирусом является резидентный вирус. 
-Они остаются бездействующими до тех пор, пока их не активирует определенное событие.
-DDoS-атака - это атака, при которой хакеры перегружают сети и серверы трафиком таким образом, что компьютерные системы не в состоянии удовлетворять законные потребности.
+Malware is software designed to damage your computer, for example viruses, worms, Trojans, and spyware. 
+The virus can enter through a USB drive or over the Internet. 
+A worm is a self-copying program; it copies itself and sends copies to all users. 
+The Trojan horse disguises itself as a useful program. 
+Spyware collects information from your computer without your consent. 
+Unlike viruses and Trojan horses, the worm does not need to connect to another program.
+There are many specific types of viruses that you need to protect yourself from. 
+One of the dangerous types of viruses is a rewriting virus. 
+This virus damages important information, sometimes completely disabling the computer. 
+Another common virus is the resident virus. 
+They remain inactive until they are activated by a certain event.
+A DDoS attack is an attack in which hackers overload networks and servers with traffic in such a way that computer systems are unable to meet legitimate needs.

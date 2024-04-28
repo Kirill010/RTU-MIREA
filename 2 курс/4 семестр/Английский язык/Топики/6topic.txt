@@ -1,10 +1,8 @@
 I would like to tell you about the it security.
 IT security is a critical aspect of protecting our computer systems from cybercrimes. 
-There are several ways to safeguard our data, and one of the most basic methods is setting strong passwords. 
-By using complex and unique passwords for each account and regularly changing them, we can significantly reduce the risk of unauthorized access.
-Biometric authentication is another advanced method to protect computer systems. 
-This technology uses unique biological characteristics such as fingerprints, iris scans, 
-or facial recognition to verify a user's identity, making it extremely difficult for unauthorized users to gain access.
-Utilizing antivirus software is essential for detecting and removing malicious software, such as viruses, worms, and trojans that could compromise the security of a computer system. 
-Regularly updating antivirus programs and running system scans can help prevent cyber-attacks and data breaches.
-A firewall acts as a barrier between your computer and the internet, monitoring incoming and outgoing network traffic to block potentially harmful data packets.
+There are several ways to safeguard, and one of the most basic methods is setting strong passwords. 
+Use complex and unique passwords for each account and change them regularly.
+Biometric authentication is a technology that uses fingerprints, or facial recognition, to verify a user's identity.
+Utilizing antivirus software is essential for detecting and removing malware, such as viruses, worms, and trojans. 
+Regular updating antivirus software and running system scans can help prevent cyber-attacks and data loss.
+A firewall acts as a barrier between your computer and the internet, monitoring incoming and outgoing network traffic to block harmful data packets.

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?validation-md5-digest f6b091e80ee301d1cd39eb2e2ea7c0fa?>
+<?validation-md5-digest 914a50a9385ef701eea25078970b0f8f?>
 <worksheet version="3.0.3" xmlns="http://schemas.mathsoft.com/worksheet30" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ws="http://schemas.mathsoft.com/worksheet30" xmlns:ml="http://schemas.mathsoft.com/math30" xmlns:u="http://schemas.mathsoft.com/units10" xmlns:p="http://schemas.mathsoft.com/provenance10">
 	<pointReleaseData/>
 	<metadata>
@@ -13,9 +13,9 @@
 			<revisedBy>super.ironman00@ya.ru</revisedBy>
 		</userData>
 		<identityInfo>
-			<revision>12</revision>
+			<revision>13</revision>
 			<documentID>960A7188-EFA7-47EE-A9B5-3FDC4D3B5D5B</documentID>
-			<versionID>573FC835-CB79-4689-B31C-828AAC0CBA29</versionID>
+			<versionID>24454815-9E53-4E0C-BB9A-1AA4CC5777B3</versionID>
 			<parentVersionID>00000000-0000-0000-0000-000000000000</parentVersionID>
 			<branchID>00000000-0000-0000-0000-000000000000</branchID>
 		</identityInfo>
@@ -591,10 +591,10 @@
 		<region region-id="118" left="138" top="723" width="39.75" height="12.75" align-x="150" align-y="732" show-border="false" show-highlight="false" is-protected="true" z-order="0" background-color="inherit" tag="">
 			<math optimize="false" disable-calc="false">
 				<ml:provenance expr-id="1" xmlns:ml="http://schemas.mathsoft.com/math30">
-					<originRef doc-id="0EE2EDAF-D093-4DA1-9485-96B21D963F49" version-id="CBD45825-7B07-4999-847E-A10111814EC3" branch-id="00000000-0000-0000-0000-000000000000" revision-num="19292292" is-modified="false" region-id="0" href="D:\RTU-MIREA\2 курс\4 семестр\Дополнительные главы вычислительной математики\pr5.xmcd" xmlns="http://schemas.mathsoft.com/provenance10">
+					<originRef doc-id="0EE2EDAF-D093-4DA1-9485-96B21D963F49" version-id="CBD45825-7B07-4999-847E-A10111814EC3" branch-id="00000000-0000-0000-0000-000000000000" revision-num="413676220" is-modified="false" region-id="0" href="D:\RTU-MIREA\2 курс\4 семестр\Дополнительные главы вычислительной математики\pr5.xmcd" xmlns="http://schemas.mathsoft.com/provenance10">
 						<hash/>
 					</originRef>
-					<parentRef doc-id="0EE2EDAF-D093-4DA1-9485-96B21D963F49" version-id="CBD45825-7B07-4999-847E-A10111814EC3" branch-id="00000000-0000-0000-0000-000000000000" revision-num="19291532" is-modified="false" region-id="0" href="D:\RTU-MIREA\2 курс\4 семестр\Дополнительные главы вычислительной математики\pr5.xmcd" xmlns="http://schemas.mathsoft.com/provenance10">
+					<parentRef doc-id="0EE2EDAF-D093-4DA1-9485-96B21D963F49" version-id="CBD45825-7B07-4999-847E-A10111814EC3" branch-id="00000000-0000-0000-0000-000000000000" revision-num="413675820" is-modified="false" region-id="0" href="D:\RTU-MIREA\2 курс\4 семестр\Дополнительные главы вычислительной математики\pr5.xmcd" xmlns="http://schemas.mathsoft.com/provenance10">
 						<hash/>
 					</parentRef>
 					<comment xmlns="http://schemas.mathsoft.com/provenance10"/>
@@ -618,10 +618,10 @@
 		<region region-id="119" left="42" top="753" width="51.75" height="18" align-x="60" align-y="762" show-border="false" show-highlight="false" is-protected="true" z-order="0" background-color="inherit" tag="">
 			<math optimize="false" disable-calc="false">
 				<ml:provenance expr-id="1" xmlns:ml="http://schemas.mathsoft.com/math30">
-					<originRef doc-id="0EE2EDAF-D093-4DA1-9485-96B21D963F49" version-id="CBD45825-7B07-4999-847E-A10111814EC3" branch-id="00000000-0000-0000-0000-000000000000" revision-num="19292292" is-modified="false" region-id="0" href="D:\RTU-MIREA\2 курс\4 семестр\Дополнительные главы вычислительной математики\pr5.xmcd" xmlns="http://schemas.mathsoft.com/provenance10">
+					<originRef doc-id="0EE2EDAF-D093-4DA1-9485-96B21D963F49" version-id="CBD45825-7B07-4999-847E-A10111814EC3" branch-id="00000000-0000-0000-0000-000000000000" revision-num="413676220" is-modified="false" region-id="0" href="D:\RTU-MIREA\2 курс\4 семестр\Дополнительные главы вычислительной математики\pr5.xmcd" xmlns="http://schemas.mathsoft.com/provenance10">
 						<hash/>
 					</originRef>
-					<parentRef doc-id="0EE2EDAF-D093-4DA1-9485-96B21D963F49" version-id="CBD45825-7B07-4999-847E-A10111814EC3" branch-id="00000000-0000-0000-0000-000000000000" revision-num="19291772" is-modified="false" region-id="0" href="D:\RTU-MIREA\2 курс\4 семестр\Дополнительные главы вычислительной математики\pr5.xmcd" xmlns="http://schemas.mathsoft.com/provenance10">
+					<parentRef doc-id="0EE2EDAF-D093-4DA1-9485-96B21D963F49" version-id="CBD45825-7B07-4999-847E-A10111814EC3" branch-id="00000000-0000-0000-0000-000000000000" revision-num="413676420" is-modified="false" region-id="0" href="D:\RTU-MIREA\2 курс\4 семестр\Дополнительные главы вычислительной математики\pr5.xmcd" xmlns="http://schemas.mathsoft.com/provenance10">
 						<hash/>
 					</parentRef>
 					<comment xmlns="http://schemas.mathsoft.com/provenance10"/>
@@ -1510,22 +1510,22 @@ yUyvkI+KsGJCMmNlfJnDa6mPrnJ9bdinBELi54UOkjlcgOfAMTS5Kd1gF7nCUjL3jjmR0d8f
 JlOuILlSCwr0mf7rmMzU/lI5TubLTd0bqTebXLyML68vMz1CmX1X5PX1B8oUtMlkVG7C9Wuh
 bKV9vXrO1Kg13caEWR+qUk5UKsfKFPSZ7RWfhyOycx/nDpep6Dsxvlno8wWRykdkKk99/0+b
 X+HSPPVthy/W62Myr0fX/Qd00KRayV8I0wAAAABJRU5ErkJggg==</item>
-		<item item-id="29" content-encoding="gzip">H4sIAAAAAAAA/+xXTWhTQRCe9/LTtE1s059UW1tjjbVarfahB0uRaFpBsQ0kUtCLtMnaPkn7
-2vRV7EWCp4IRFMGzXkQQBA+CRxURhULjTfRST3oUfy6Cfc7ubF9fgmj9Q6SdMPszO9/M7mTf
-7qwfABTkJHKFaKtYus0sY03ASUP2jaXiw2dYyhQSSCD3ICjq0ryfAXJu7fYj7Hm0EFY5r5Z/
-iFWZFogKbZ/sl2tqFUDaB+BSz0IXuiN9XyXBK/waoEK0EjEBMly5ThN+AoAjfF7lscFk3+QR
-k40pwrYf2esUoCZUC1Ufm0ywEd0Y94iBvRydNlIkcwvZfnu93qnRiUPGOVreMeQyFCTsBfcj
-LyAzxJ1HRwNo8yP2X5AduCKDqIIaFI0a29NB08zqw9Mmo/l1A1+Kk2q6W4v6tUtxq6O41dZT
-3OrsuIW0a49xoK6B4hVC3fWimQsVWdoglubHkMWMsWGDB4kGqvkCUbws4VPqwb/fwvo0LsrA
-+g2yZXFtVI1nWCyjs3FTYHAtbrlkWSK2MB9cuHG38TWU0AFwwaJVDl6HTLHRNB1V9hct7pHI
-WqP/ir4gLzp4jVYXJfDUMMCEMPTBONZZmCk9Cr5LIfDY3zw/Cy7APqU1+Cp4NQeBwSeeRqdu
-of7OyaMXXyoubD+QB0kMvXO/TJRTP+WbUw2oinM9K8XNKj/WWSn9iv8/Sb/jny5AvKWAbgd+
-7/Izf+0sWB3kweRrBpO3hQbaDxVFO8NuK3LoBHI9yUKymQZd7J4qqeKSGN2B5xnffeQPVvEO
-vUxO5njRj9lsGHkUz4IM/sLQi+UI1ppQevr+HcziFi2U5V1v9zCcb164Otx5a7p94l7Dp79o
-u4d3juefdaUKwZuX4Hpk3vN8KRvylcTqW/EDRZXfGf+2MCkEvGyL+F+RmGUjJaI8DVcVSoWT
-LKsPZU716lMTmaGZASPNSD8uQE0EkJtlY+kboVm+EVrojdC8iXLeFtQN0xuhZTO9EcJ837SS
-tbBwH42DsoUEzcJ6RBrZSkYiKGojI5FtZKSNG2knTJttZLvDyI5lbIfE7iRsB8fuItUOG9vp
-GNztGOT9rwAAAP//AwBT0CY6fA0AAA==</item>
+		<item item-id="29" content-encoding="gzip">H4sIAAAAAAAA/+xXTUhUURQ+782PMzqTzqhjadpkk1mW5aMWisTUaBCkA2MIrUJnbvpi9On4
+jNzE0CJcTGAErQsihFYtgpYVEQWBtova2KqW0c8myNe591yfb4Yo+yNCz3Duz7nnO+feM/fd
+e24AABTkAeRy0VaxdJs5xhqAk4bsG0snh8+ytCkkkELuRlDcpXk/A+Td2u2H2PNoEazyXq3w
+AKsyLRgX2j7Z92tqJUDGB+BSz0EHuiN9XwXBywMaoEK8AjFBMlyxSRN+goAjfF7+xOBA7+Rx
+k40pwnYA2esUoCZUCVUfm0yxEd0Y94iBgxydMdIkcwtZp71e79ToxFHjPC3vBHIZClL2gvuQ
+l5AZ4i6go360+RH7L8gOXJFBVEENiUbY9nTENHP68LTJaH5dwJfipHBXc1G/eiVuNRS36lqK
+W40dt4h27REO1NRRvCKou1k085EiS1vE0gIYsoQxNmzwINFAFV8gilclfErd+PdbWJ/BRRlY
+v0G2LK6NqsksS2R1Nm4KDK7FLZcsS8QuLoSWbtypfw0ldBhcsGz5weuQKTaapqPK/rLFPRJZ
+G/Rf0RfkZQdv0PqiFJ4aBpgQhV4YxzoHM6VHwXcpAh77m+dnwUU4pDSHXoWu5iE4+NhT79SN
+X7rZOT/3UnFh+748SBLonftlopz6Kd+cwqAqzvWsFTer/FhnrfQr/v8k/Y5/ugDxlgK6Hfi9
+y8/8jbNgfZAHk68ZTN6W6mg/lBftDLutyKFTyLUki8hmBnSxeyqliktidAeeZ3z3kD9YxTt0
+jpw840UfZrNR5FE8C7L4i0IPliNYa0Lpyft3MItbdLGs4Hp7gOF8C8LVsfb56daJu3Wf/qLt
+bt45WXjakV4M3boM12MLnucr2ZCvJFbfih8oqvzO+LeFSSHgZVvE/4rELOspEeVpuKpQKjzA
+cvpQ9nSPPjWRHZrpNzKM9JMC1EAAuVm2lr4RGuUboYneCI3bKOdtQt0ovRGattMbIcr3TTNZ
+iwr38SQoO0jQKKzHpJGdZCSGohYyEttFRlq4kVbCtNhGdjuM7FnFtknsXsK2cew+Um2zse2O
+wf2OQd7/CgAA//8DAF3/XA98DQAA</item>
 		<item item-id="30">iVBORw0KGgoAAAANSUhEUgAAAJ4AAADpCAYAAADVoo4CAAAAAXNSR0IArs4c6QAAAARnQU1B
 AACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAzDSURBVHhe7Z3Nlau6EoUdlQcdjUed
 iqedR887DCdwkrgZcClJQCG0+VXZIO1vrb3ec4Oxr/ydAuwS3BpCPsBHxbvdbsxFc5SPi/ff

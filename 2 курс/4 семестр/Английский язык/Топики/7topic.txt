@@ -1,1 +1,8 @@
-I would like to tell you about the 
+I would like to tell you about the artificial neural networks.
+Neural network can accomplish many tasks: from face recognition, to fraud detection. 
+Neural networks are great tools for finding patterns.
+Specific tasks include classification, clustering, and prediction, (for example, weather forecasting). 
+Neural networks aren’t programmed, they are trained. 
+The network consists of layers of interconnected nodes, that process information and make decisions based on input data.
+The connections are represented by a number called a weight. 
+The higher the weight, the more influence one unit has on another.

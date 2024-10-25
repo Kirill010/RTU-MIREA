@@ -339,9 +339,10 @@ INSERT INTO contract (ban_id, service_number, link_if, date_work) VALUES
 (9, 9, 'https://example.com/contract9.pdf', '2023-03-30'), 
 (10, 10, 'https://example.com/contract10.pdf', '2023-02-28');
 
--- Практическая работа №2
 
 SELECT * FROM architect;
+
+-- Практическая работа №2
 
 SELECT fio FROM architect;
 
@@ -423,13 +424,29 @@ SELECT name_mater, price_per_piece FROM materials
 INNER JOIN shops ON materials.id_mater = shops.id_store
 WHERE materials.price_per_piece > 1000;
 
--- Операция пересечения (надо подумать)
-SELECT shops.name_shop, materials.* FROM shops, materials 
-INNER JOIN list ON shops.id_store = list.store_id 
-INNER JOIN list ON materials.id_mater = list.mater_id
-WHERE materials.type='Дерево';
+-- Операция пересечения +
+SELECT 
+    s.name_shop AS shop_name,
+    s.address AS shop_address,
+    m.name_mater AS material_name,
+    m.price_per_piece AS material_price
+FROM 
+    shops s
+JOIN 
+    list l ON s.id_store = l.store_id
+JOIN 
+    materials m ON l.mater_id = m.id_mater
+WHERE 
+    m.type = 'Дерево' -- ищем строительные материалы
+ORDER BY 
+    s.name_shop;  -- Сортировка по имени магазина
 
--- Операция разности
+
+-- Операция разности +
+SELECT builders.FIO, builders.work_exp FROM builders
+WHERE NOT EXISTS
+(SELECT architect.FIO, architect.work_exp FROM architect
+WHERE architect.FIO=builders.FIO AND architect.work_exp=builders.work_exp);
 
 
 -- Операция группировки +
@@ -448,19 +465,190 @@ SELECT * FROM builders
 INNER JOIN profession on builders.service_number = profession.id_prof
 WHERE builders.rating > 0.5 OR builders.work_exp > 2
 GROUP BY builders.service_number ORDER BY builders.rating;
- 
 
+-- Операция деления +
+-- DROP VIEW IF EXISTS T1;
+-- DROP VIEW IF EXISTS T2;
+-- DROP VIEW IF EXISTS TT;
 
-
--- Операция деления (надо подумать)
-
-
-
+SELECT m.name_mater FROM materials m
+WHERE NOT EXISTS (
+    SELECT * 
+    FROM shops s
+    WHERE NOT EXISTS (
+        SELECT * FROM list l
+        WHERE l.store_id = s.id_store AND l.mater_id = m.id_mater
+        )
+    );
 
 -- Хранимые процедуры, функции и триггеры
 
+-- Процедуры
+
+-- 1. Добавление нового архитектора
+CREATE PROCEDURE AddArchitect (
+    IN p_fio VARCHAR(255),
+    IN p_work_exp INT,
+    IN p_contacts TEXT
+)
+BEGIN
+    INSERT INTO architect (fio, work_exp, contacts) VALUES (p_fio, p_work_exp, p_contacts);
+END;
+   
+-- 2. Получение информации о проекте по ID
+CREATE PROCEDURE GetProjectById (
+    IN p_project_id INT
+)
+BEGIN
+    SELECT * FROM project WHERE id_project = p_project_id;
+END;
+   
+-- 3. Добавление нового материала в магазин
+CREATE PROCEDURE AddMaterialToShop (
+    IN p_name_mater VARCHAR(255),
+    IN p_type VARCHAR(255),
+    IN p_price_per_piece FLOAT,
+    IN p_specifications_id INT,
+    IN p_manufacturers_id INT
+)
+BEGIN
+    INSERT INTO materials (name_mater, type, price_per_piece, specifications_id, manufacturers_id)
+    VALUES (p_name_mater, p_type, p_price_per_piece, p_specifications_id, p_manufacturers_id);
+END;
+   
+-- 4. Обновление статуса строительства бани
+CREATE PROCEDURE UpdateBanyaConstructionStatus (
+    IN p_banya_id INT,
+    IN p_new_status VARCHAR(255)
+)
+BEGIN
+    UPDATE banya SET status = p_new_status WHERE id = p_banya_id;
+END;
+   
+-- 5. Добавление новой записи о покупке материалов
+CREATE PROCEDURE AddMaterialPurchase (
+    IN p_banya_id INT,
+    IN p_materials_id INT,
+    IN p_date_purchase DATETIME,
+    IN p_quantity INT
+)
+BEGIN
+    INSERT INTO checks (banya_id, materials_id, date_purchase, quantity)
+    VALUES (p_banya_id, p_materials_id, p_date_purchase, p_quantity);
+END;
+   
+-- Функции
+
+-- 1. Получение стоимости строительства бани по проекту
+CREATE FUNCTION GetConstructionCost (p_project_id INT) RETURNS FLOAT
+BEGIN
+    DECLARE total_cost FLOAT;
+    SELECT SUM(price) INTO total_cost FROM materials 
+    JOIN checks ON materials.id_mater = checks.materials_id 
+    JOIN banya ON checks.banya_id = banya.id 
+    WHERE banya.project_id = p_project_id;
+       
+    RETURN total_cost;
+END;
+   
 
 
+-- 2. Подсчет количества материалов по типу
+CREATE FUNCTION CountMaterialsByType (p_type VARCHAR(255)) RETURNS INT
+BEGIN
+    DECLARE material_count INT;
+    SELECT COUNT(*) INTO material_count FROM materials WHERE type = p_type;
+       
+    RETURN material_count;
+END;
+   
+
+
+-- 3. Получение списка всех архитекторов с опытом работы более N лет
+CREATE FUNCTION GetArchitectsWithExperience (p_years INT) RETURNS TABLE
+BEGIN
+    RETURN (SELECT * FROM architect WHERE work_exp > p_years);
+END;
+   
+
+
+-- 4. Получение информации о магазине по ID
+CREATE FUNCTION GetShopById (p_shop_id INT) RETURNS TABLE
+BEGIN
+    RETURN (SELECT * FROM shops WHERE id_store = p_shop_id);
+END;
+   
+
+
+-- 5. Проверка наличия материала в магазине
+CREATE FUNCTION IsMaterialAvailable (p_material_id INT) RETURNS BOOLEAN
+BEGIN
+    DECLARE available BOOLEAN;
+    SELECT COUNT(*) > 0 INTO available FROM list WHERE mater_id = p_material_id;
+       
+    RETURN available;
+END;
+   
+
+
+-- Триггеры
+
+-- 1. Триггер на обновление цены материала
+CREATE TRIGGER UpdateMaterialPrice AFTER UPDATE ON materials
+FOR EACH ROW
+BEGIN
+    INSERT INTO price_history (material_id, old_price, new_price, change_date)
+    VALUES (NEW.id_mater, OLD.price_per_piece, NEW.price_per_piece, NOW());
+END;
+   
+
+
+-- 2. Триггер на добавление новой бани для уведомления архитектора
+CREATE TRIGGER NotifyArchitect AFTER INSERT ON banya
+FOR EACH ROW
+BEGIN
+    INSERT INTO notifications (architect_service_number, message)
+    VALUES (NEW.project_id.architect_service_number, CONCAT('Новая баня построена для ', NEW.owner));
+END;
+   
+
+
+-- 3. Триггер на удаление материала из магазина
+CREATE TRIGGER PreventMaterialDeletion BEFORE DELETE ON materials
+FOR EACH ROW
+BEGIN
+    DECLARE material_count INT;
+    SELECT COUNT(*) INTO material_count FROM list WHERE mater_id = OLD.id_mater;
+       
+    IF material_count > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Нельзя удалить материал, так как он используется в магазинах.';
+    END IF;
+END;
+   
+
+
+-- 4. Триггер на добавление новой записи о покупке материалов
+CREATE TRIGGER LogMaterialPurchase AFTER INSERT ON checks
+FOR EACH ROW
+BEGIN
+    INSERT INTO purchase_log (banya_id, materials_id, quantity, purchase_date)
+    VALUES (NEW.banya_id, NEW.materials_id, NEW.quantity, NEW.date_purchase);
+END;
+   
+
+
+-- 5. Триггер на изменение статуса бани
+CREATE TRIGGER LogBanyaStatusChange BEFORE UPDATE ON banya
+FOR EACH ROW
+BEGIN
+    IF OLD.status != NEW.status THEN
+        INSERT INTO status_change_log (banya_id, old_status, new_status, change_date)
+        VALUES (NEW.id, OLD.status, NEW.status, NOW());
+    END IF;
+END;
+   
+
+-- Практическая работа №4
 
 
 

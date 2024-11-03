@@ -49,7 +49,8 @@ PRIMARY KEY (id_specifications)
 -- 7
 CREATE TABLE project (
 id_project INT(10) AUTO_INCREMENT,
-date_end DATETIME NOT NULL,
+plan_start_date DATETIME NOT NULL,
+plan_end_date DATETIME NOT NULL,
 square INT(10) NOT NULL,
 price FLOAT(10) NOT NULL,
 draw_id_draw INT(10) NOT NULL,
@@ -65,6 +66,7 @@ id INT(10) AUTO_INCREMENT,
 owner VARCHAR(255) NOT NULL,
 address TEXT NOT NULL,
 start_date_construction DATETIME NOT NULL,
+end_date_construction DATETIME NOT NULL,
 project_id INT(10) NOT NULL,
 PRIMARY KEY (id),
 FOREIGN KEY (project_id) REFERENCES project (id_project)
@@ -120,7 +122,8 @@ CREATE TABLE contract (
 ban_id INT(10),
 service_number INT(10),
 link_if VARCHAR(2550) NOT NULL,
-date_work DATETIME NOT NULL,
+date_work_start DATETIME NOT NULL,
+date_work_end DATETIME NOT NULL,
 PRIMARY KEY (ban_id, service_number),
 FOREIGN KEY (ban_id) REFERENCES banya (id),
 FOREIGN KEY (service_number) REFERENCES builders (service_number)
@@ -327,17 +330,17 @@ INSERT INTO builders (service_number, fio, work_exp, contacts, revenue, professi
 
 
 -- 13
-INSERT INTO contract (ban_id, service_number, link_if, date_work) VALUES 
-(1, 1, 'https://example.com/contract1.pdf', '2023-10-05'), 
-(2, 2, 'https://example.com/contract2.pdf', '2023-11-10'), 
-(3, 3, 'https://example.com/contract3.pdf', '2023-09-25'), 
-(4, 4, 'https://example.com/contract4.pdf', '2023-08-15'), 
-(5, 5, 'https://example.com/contract5.pdf', '2023-07-20'), 
-(6, 6, 'https://example.com/contract6.pdf', '2023-06-18'), 
-(7, 7, 'https://example.com/contract7.pdf', '2023-05-14'), 
-(8, 8, 'https://example.com/contract8.pdf', '2023-04-22'), 
-(9, 9, 'https://example.com/contract9.pdf', '2023-03-30'), 
-(10, 10, 'https://example.com/contract10.pdf', '2023-02-28');
+INSERT INTO contract (ban_id, service_number, link_if, date_work_start, date_work_end) VALUES 
+(1, 1, 'https://example.com/contract1.pdf', '2023-01-01 08:00:00', '2023-01-10 17:00:00'), 
+(2, 2, 'https://example.com/contract2.pdf', '2023-02-01 09:00:00', '2023-02-15 18:00:00'), 
+(3, 3, 'https://example.com/contract3.pdf', '2023-03-01 10:00:00', '2023-03-20 16:00:00'), 
+(4, 4, 'https://example.com/contract4.pdf', '2023-04-01 08:30:00', '2023-04-10 17:30:00'), 
+(5, 5, 'https://example.com/contract5.pdf', '2023-05-01 09:15:00', '2023-05-12 18:15:00'), 
+(6, 6, 'https://example.com/contract6.pdf', '2023-06-01 10:45:00', '2023-06-10 19:00:00'), 
+(7, 7, 'https://example.com/contract7.pdf', '2023-07-01 11:00:00', '2023-07-15 20:00:00'), 
+(8, 8, 'https://example.com/contract8.pdf', '2023-08-01 09:30:00', '2023-08-20 18:30:00'), 
+(9, 9, 'https://example.com/contract9.pdf', '2023-09-01 08:15:00', '2023-09-10 17:45:00'), 
+(10, 10, 'https://example.com/contract10.pdf', '2023-10-01 10:30:00', '2023-10-15 19:15:00');
 
 
 SELECT * FROM architect;
@@ -410,6 +413,9 @@ WHERE service_number=9;
 UPDATE builders SET rating=3.8
 WHERE service_number=10;
 
+-- DELETE FROM 
+-- WHERE 
+
 SELECT * FROM builders;
 
 -- Практическая работа №3
@@ -450,7 +456,7 @@ WHERE architect.FIO=builders.FIO AND architect.work_exp=builders.work_exp);
 
 
 -- Операция группировки +
-SELECT type, COUNT(*) as cnt FROM builders
+SELECT type, COUNT(*) as cnt FROM materials
 WHERE type = 'Пластик' 
 GROUP BY type;
 
@@ -485,24 +491,31 @@ WHERE NOT EXISTS (
 
 -- Процедуры
 
+-- DROP PROCEDURE имя_процедуры
+
 -- 1. Добавление нового архитектора
-CREATE PROCEDURE AddArchitect (
-    IN p_fio VARCHAR(255),
-    IN p_work_exp INT,
-    IN p_contacts TEXT
-)
+CREATE PROCEDURE AddArchitect (IN p_fio VARCHAR(255), IN p_work_exp INT, IN p_contacts TEXT)
 BEGIN
     INSERT INTO architect (fio, work_exp, contacts) VALUES (p_fio, p_work_exp, p_contacts);
 END;
+
+CALL AddArchitect('Пушкин Александр Сергеевич', 7, 'onegin@mail.com');
    
--- 2. Получение информации о проекте по ID
-CREATE PROCEDURE GetProjectById (
-    IN p_project_id INT
+-- 2. Получите список материалов, используемых в конкретной бане.
+CREATE PROCEDURE get_materials_by_banya(
+    IN p_banya_id INT
 )
 BEGIN
-    SELECT * FROM project WHERE id_project = p_project_id;
+    SELECT materials.name_mater, checks.quantity
+    FROM banya
+    JOIN checks ON banya.id = checks.banya_id
+    JOIN materials ON checks.materials_id = materials.id_mater
+    WHERE banya.id = p_banya_id;
 END;
-   
+
+
+CALL get_materials_by_banya(8)
+
 -- 3. Добавление нового материала в магазин
 CREATE PROCEDURE AddMaterialToShop (
     IN p_name_mater VARCHAR(255),
@@ -515,56 +528,87 @@ BEGIN
     INSERT INTO materials (name_mater, type, price_per_piece, specifications_id, manufacturers_id)
     VALUES (p_name_mater, p_type, p_price_per_piece, p_specifications_id, p_manufacturers_id);
 END;
+
+-- CALL AddMaterialToShop('Щебень', 'Камень', 15000, )
    
--- 4. Обновление статуса строительства бани
-CREATE PROCEDURE UpdateBanyaConstructionStatus (
-    IN p_banya_id INT,
-    IN p_new_status VARCHAR(255)
+-- 4. Получение список строителей, сколько они работали.
+CREATE PROCEDURE get_builders_by_banya(
+    IN p_banya_id INT
 )
 BEGIN
-    UPDATE banya SET status = p_new_status WHERE id = p_banya_id;
+    SELECT builders.fio, DATEDIFF(contract.date_work_end,contract.date_work_start)
+    FROM banya
+    JOIN contract ON banya.id = contract.ban_id
+    JOIN builders ON contract.service_number = builders.service_number
+    WHERE banya.id = p_banya_id;
 END;
+
+call get_builders_by_banya(2)
    
--- 5. Добавление новой записи о покупке материалов
-CREATE PROCEDURE AddMaterialPurchase (
-    IN p_banya_id INT,
-    IN p_materials_id INT,
-    IN p_date_purchase DATETIME,
-    IN p_quantity INT
-)
+-- 5. Посчитать площадь
+CREATE PROCEDURE calculate_material_area(IN p_type VARCHAR(255))
 BEGIN
-    INSERT INTO checks (banya_id, materials_id, date_purchase, quantity)
-    VALUES (p_banya_id, p_materials_id, p_date_purchase, p_quantity);
+    SELECT name_spec, size_a_metr * size_b_metr FROM specifications
+    JOIN materials ON materials.specifications_id = specifications.id_specifications
+    WHERE materials.type = p_type;
 END;
+
+call calculate_material_area('Дерево');
+
    
 -- Функции
 
+-- DROP FUNCTION [ IF EXISTS ] function_name;
+
 -- 1. Получение стоимости строительства бани по проекту
-CREATE FUNCTION GetConstructionCost (p_project_id INT) RETURNS FLOAT
+CREATE FUNCTION GetConstructionCost (p_project_id INT) 
+RETURNS FLOAT 
+DETERMINISTIC
 BEGIN
-    DECLARE total_cost FLOAT;
-    SELECT SUM(price) INTO total_cost FROM materials 
+    DECLARE total_cost FLOAT DEFAULT 0;
+
+    SELECT SUM(materials.price_per_piece * checks.quantity) INTO total_cost 
+    FROM materials 
     JOIN checks ON materials.id_mater = checks.materials_id 
     JOIN banya ON checks.banya_id = banya.id 
     WHERE banya.project_id = p_project_id;
-       
+
     RETURN total_cost;
-END;
-   
+END
+
+select GetConstructionCost(2);
 
 
 -- 2. Подсчет количества материалов по типу
-CREATE FUNCTION CountMaterialsByType (p_type VARCHAR(255)) RETURNS INT
+CREATE FUNCTION CountMaterialsByType (p_type VARCHAR(255)) 
+RETURNS INT
+DETERMINISTIC
 BEGIN
     DECLARE material_count INT;
+   
     SELECT COUNT(*) INTO material_count FROM materials WHERE type = p_type;
        
     RETURN material_count;
 END;
-   
+
+select CountMaterialsByType('Дерево');
 
 
--- 3. Получение списка всех архитекторов с опытом работы более N лет
+-- 3. Проверка наличия материала в магазине
+CREATE FUNCTION IsMaterialAvailable (p_material_id INT) RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+    DECLARE available BOOLEAN;
+    SELECT COUNT(*) > 0 INTO available FROM list WHERE mater_id = p_material_id;
+       
+    RETURN available;
+END;
+
+
+select IsMaterialAvailable(112);
+
+
+-- 4. Получение списка всех архитекторов с опытом работы более N лет
 CREATE FUNCTION GetArchitectsWithExperience (p_years INT) RETURNS TABLE
 BEGIN
     RETURN (SELECT * FROM architect WHERE work_exp > p_years);
@@ -572,24 +616,15 @@ END;
    
 
 
--- 4. Получение информации о магазине по ID
+-- 5. Получение информации о магазине по ID
 CREATE FUNCTION GetShopById (p_shop_id INT) RETURNS TABLE
 BEGIN
     RETURN (SELECT * FROM shops WHERE id_store = p_shop_id);
 END;
    
-
-
--- 5. Проверка наличия материала в магазине
-CREATE FUNCTION IsMaterialAvailable (p_material_id INT) RETURNS BOOLEAN
-BEGIN
-    DECLARE available BOOLEAN;
-    SELECT COUNT(*) > 0 INTO available FROM list WHERE mater_id = p_material_id;
-       
-    RETURN available;
-END;
    
-
+-- Вопросы для гпт 
+-- Основные триггеры для БД
 
 -- Триггеры
 
@@ -647,6 +682,17 @@ BEGIN
     END IF;
 END;
    
+specifications.size_a * specifications.size_b > project.size
+
+-- 1. Обновите общую стоимость бани при добавлении нового чека.
+CREATE TRIGGER update_banya_cost_on_check_insertion
+AFTER INSERT ON checks
+FOR EACH ROW
+BEGIN
+    UPDATE banya
+    SET total_cost = total_cost + (SELECT materials.price_per_piece * NEW.quantity FROM materials WHERE materials.id_mater = NEW.materials_id)
+    WHERE id = NEW.banya_id;
+END;
 
 -- Практическая работа №4
 

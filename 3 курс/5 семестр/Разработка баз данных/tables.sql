@@ -732,7 +732,7 @@ CREATE PROCEDURE get_builders_by_banya(
     IN p_banya_id INT
 )
 BEGIN
-    SELECT builders.fio, DATEDIFF(contract.date_work_end,contract.date_work_start)
+    SELECT builders.fio, TIMEDIFF(contract.date_work_end,contract.date_work_start)
     FROM banya
     JOIN contract ON banya.id = contract.ban_id
     JOIN builders ON contract.service_number = builders.service_number
@@ -812,95 +812,105 @@ END;
 
 select IsMaterialAvailable(112);
 
-
 -- 4. Посчитать количество дней, когда началось строительство бани летом
-CREATE FUNCTION count_summer_construction_days(table_name VARCHAR(255)) RETURNS INT
+CREATE FUNCTION count_summer_construction_days(m1 INT, m2 INT, m3 INT) 
+RETURNS INT
 DETERMINISTIC
 BEGIN
-    DECLARE summer_days INT;
+    DECLARE cnt INT;
+    SELECT COUNT(*) into cnt FROM banya WHERE MONTH(start_date_construction) IN (m1, m2, m3);
 
-    SET @query = CONCAT('SELECT COUNT(*) INTO summer_days FROM ', table_name, ' WHERE MONTH(start_date_construction) IN (6, 7, 8)');
-    
-    PREPARE stmt FROM @query;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
-
-    RETURN summer_days;
+    RETURN cnt;
 END;
 
+SELECT address, count_summer_construction_days(6, 7, 8) AS summer_construction_days from banya
+WHERE MONTH(start_date_construction) IN (6, 7, 8);
 
-SELECT count_summer_construction_days('banya') AS summer_construction_days;
+-- 5. Сколько в среднем архитектор делает проект
+CREATE FUNCTION average_construction_time(service_num INT)
+RETURNS INT
+DETERMINISTIC
+begin
+	DECLARE avg_time INT;
+    SELECT AVG(TIMESTAMPDIFF(DAY, plan_start_date, plan_end_date)) INTO avg_time
+    FROM architect join project on architect.service_number = project.architect_service_number 
+   	where architect.service_number = service_num;
+    RETURN avg_time;
+END;
 
-
--- 5. 
-
+select architect.fio, average_construction_time(2) FROM architect 
+join project on architect.service_number = project.architect_service_number
+where architect.service_number = 2
+group by architect.fio;
 
 -- Триггеры
 
--- 1. Триггер на обновление цены материала
-CREATE TRIGGER UpdateMaterialPrice AFTER UPDATE ON materials
+-- 1. Триггер для проверки уникальности владельца бани
+-- Этот триггер предотвращает создание нескольких записей о бане с одинаковым владельцем.
+
+CREATE TRIGGER check_unique_banya_owner
+BEFORE INSERT ON banya
 FOR EACH ROW
 BEGIN
-    INSERT INTO price_history (material_id, old_price, new_price, change_date)
-    VALUES (NEW.id_mater, OLD.price_per_piece, NEW.price_per_piece, NOW());
+    DECLARE owner_count INT;
+    SELECT COUNT(*) INTO owner_count FROM banya WHERE owner = NEW.owner;
+
+    IF owner_count > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Owner already has a banya';
+    END IF;
 END;
-   
 
+-- 2. Триггер для автоматического расчета стоимости проекта
+-- Этот триггер автоматически обновляет стоимость проекта при добавлении новой записи о материале в таблицу checks.
+CREATE TRIGGER update_project_price
+AFTER INSERT ON checks
+FOR EACH ROW
+BEGIN
+    DECLARE total_price FLOAT DEFAULT 0;
 
--- 2. Триггер на добавление новой бани для уведомления архитектора
+    SELECT SUM(m.price_per_piece * c.quantity) INTO total_price
+    FROM materials m
+    JOIN checks c ON m.id_mater = c.materials_id
+    WHERE c.banya_id = NEW.banya_id;
+
+    UPDATE project
+    SET price = total_price
+    WHERE id_project = (SELECT project_id FROM banya WHERE id = NEW.banya_id);
+END;
+
+-- 3. Триггер для проверки наличия необходимых материалов перед началом строительства
+-- Этот триггер проверяет наличие всех необходимых материалов перед началом строительства бани.
+CREATE TRIGGER check_materials_before_start
+BEFORE UPDATE ON banya
+FOR EACH ROW
+BEGIN
+    DECLARE missing_materials INT;
+
+    SELECT COUNT(*) INTO missing_materials
+    FROM materials m
+    LEFT JOIN checks c ON m.id_mater = c.materials_id AND c.banya_id = NEW.id
+    WHERE c.quantity IS NULL;
+
+    IF missing_materials > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Необходимые материалы отсутствуют для начала строительства';
+    END IF;
+END;
+
+-- 4. Триггер для удаления материалов из списка магазинов
+-- Этот триггер удаляет материалы из таблицы list, если материал был удален из таблицы materials.
+CREATE TRIGGER delete_material_from_list
+AFTER DELETE ON materials
+FOR EACH ROW
+BEGIN
+    DELETE FROM list WHERE mater_id = OLD.id_mater;
+END;
+
+-- 5. Триггер на добавление новой бани для уведомления архитектора
 CREATE TRIGGER NotifyArchitect AFTER INSERT ON banya
 FOR EACH ROW
 BEGIN
     INSERT INTO notifications (architect_service_number, message)
     VALUES (NEW.project_id.architect_service_number, CONCAT('Новая баня построена для ', NEW.owner));
-END;
-   
-
-
--- 3. Триггер на удаление материала из магазина
-CREATE TRIGGER PreventMaterialDeletion BEFORE DELETE ON materials
-FOR EACH ROW
-BEGIN
-    DECLARE material_count INT;
-    SELECT COUNT(*) INTO material_count FROM list WHERE mater_id = OLD.id_mater;
-       
-    IF material_count > 0 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Нельзя удалить материал, так как он используется в магазинах.';
-    END IF;
-END;
-   
-
-
--- 4. Триггер на добавление новой записи о покупке материалов
-CREATE TRIGGER LogMaterialPurchase AFTER INSERT ON checks
-FOR EACH ROW
-BEGIN
-    INSERT INTO purchase_log (banya_id, materials_id, quantity, purchase_date)
-    VALUES (NEW.banya_id, NEW.materials_id, NEW.quantity, NEW.date_purchase);
-END;
-   
-
-
--- 5. Триггер на изменение статуса бани
-CREATE TRIGGER LogBanyaStatusChange BEFORE UPDATE ON banya
-FOR EACH ROW
-BEGIN
-    IF OLD.status != NEW.status THEN
-        INSERT INTO status_change_log (banya_id, old_status, new_status, change_date)
-        VALUES (NEW.id, OLD.status, NEW.status, NOW());
-    END IF;
-END;
-   
-specifications.size_a * specifications.size_b > project.size
-
--- 1. Обновите общую стоимость бани при добавлении нового чека.
-CREATE TRIGGER update_banya_cost_on_check_insertion
-AFTER INSERT ON checks
-FOR EACH ROW
-BEGIN
-    UPDATE banya
-    SET total_cost = total_cost + (SELECT materials.price_per_piece * NEW.quantity FROM materials WHERE materials.id_mater = NEW.materials_id)
-    WHERE id = NEW.banya_id;
 END;
 
 -- Практическая работа №4
@@ -955,3 +965,36 @@ LEAD(project.plan_start_date, 1) OVER (ORDER BY project.plan_start_date) AS next
 FIRST_VALUE(project.plan_start_date) OVER (ORDER BY project.plan_start_date) AS first_val,
 LAST_VALUE(project.plan_start_date) OVER (ORDER BY project.plan_start_date) AS last_val
 FROM banya JOIN project ON project.id_project = banya.project_id;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

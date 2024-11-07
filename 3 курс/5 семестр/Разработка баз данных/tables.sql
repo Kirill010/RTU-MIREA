@@ -642,21 +642,62 @@ JOIN list ON materials.id_mater = list.mater_id
 JOIN shops ON list.store_id = shops.id_store
 ORDER BY materials.price_per_piece ASC;
 
-
 -- Операция деления +
 -- DROP VIEW IF EXISTS T1;
 -- DROP VIEW IF EXISTS T2;
 -- DROP VIEW IF EXISTS TT;
 
-SELECT m.name_mater FROM materials m
-WHERE NOT EXISTS (
-    SELECT * 
-    FROM shops s
-    WHERE NOT EXISTS (
-        SELECT * FROM list l
-        WHERE l.store_id = s.id_store AND l.mater_id = m.id_mater
-        )
-    );
+SELECT materials.name_mater FROM materials
+    WHERE NOT EXISTS (SELECT * FROM shops
+        WHERE NOT EXISTS (SELECT * FROM list
+            WHERE list.store_id = shops.id_store AND list.mater_id = materials.id_mater));
+
+-- Выборка данных (DQL)
+
+-- Операция проекции + 
+select * from materials;
+
+-- Операция селекции + 
+select * from builders
+where rating > 4;
+
+-- Операция соединения + 
+SELECT banya.owner, banya.address, project.plan_start_date, project.plan_end_date
+FROM banya
+JOIN project ON banya.project_id = project.id_project;
+
+-- Операция объединения +
+SELECT fio FROM architect
+WHERE service_number = 1
+UNION
+SELECT fio FROM builders
+WHERE service_number = 2;
+
+-- Операция пересечения +
+SELECT materials.name_mater, materials.type
+FROM materials
+INNER JOIN list ON materials.id_mater = list.mater_id
+ORDER BY materials.type;
+
+-- Операция разности +
+SELECT builders.FIO, builders.work_exp FROM builders
+WHERE NOT EXISTS
+(SELECT architect.FIO, architect.work_exp FROM architect
+WHERE architect.FIO=builders.FIO AND architect.work_exp=builders.work_exp);
+
+-- Операция группировки + Посчитаем количество бань, построенных каждым архитектором.
+SELECT architect.fio, COUNT(banya.id) AS count_banya
+FROM architect
+JOIN project ON architect.service_number = project.architect_service_number
+JOIN banya ON project.id_project = banya.project_id
+GROUP BY architect.fio;
+
+-- Операция сортировки +
+SELECT * FROM shops
+ORDER BY name_shop ASC;
+
+-- Операция деления
+
 
 -- Хранимые процедуры, функции и триггеры
 
@@ -684,25 +725,9 @@ BEGIN
     WHERE banya.id = p_banya_id;
 END;
 
-
-CALL get_materials_by_banya(8)
-
--- 3. Добавление нового материала в магазин
-CREATE PROCEDURE AddMaterialToShop (
-    IN p_name_mater VARCHAR(255),
-    IN p_type VARCHAR(255),
-    IN p_price_per_piece FLOAT,
-    IN p_specifications_id INT,
-    IN p_manufacturers_id INT
-)
-BEGIN
-    INSERT INTO materials (name_mater, type, price_per_piece, specifications_id, manufacturers_id)
-    VALUES (p_name_mater, p_type, p_price_per_piece, p_specifications_id, p_manufacturers_id);
-END;
-
--- CALL AddMaterialToShop('Щебень', 'Камень', 15000, )
+CALL get_materials_by_banya(1);
    
--- 4. Получение список строителей, сколько они работали.
+-- 3. Получение список строителей, сколько они работали.
 CREATE PROCEDURE get_builders_by_banya(
     IN p_banya_id INT
 )
@@ -714,7 +739,17 @@ BEGIN
     WHERE banya.id = p_banya_id;
 END;
 
-call get_builders_by_banya(2)
+call get_builders_by_banya(2);
+
+-- 4. Обновления даты окончания строительства бани
+CREATE PROCEDURE UpdateDate(IN id_p INT, IN end_date DATETIME)
+BEGIN
+    UPDATE banya
+    SET end_date_construction = end_date
+    WHERE id = id_p;
+END;
+
+call UpdateDate(20, '2024-12-19 10:00:00');
    
 -- 5. Посчитать площадь
 CREATE PROCEDURE calculate_material_area(IN p_type VARCHAR(255))
@@ -724,31 +759,32 @@ BEGIN
     WHERE materials.type = p_type;
 END;
 
-call calculate_material_area('Дерево');
+call calculate_material_area('Металл');
 
-   
 -- Функции
 
 -- DROP FUNCTION [ IF EXISTS ] function_name;
 
--- 1. Получение стоимости строительства бани по проекту
+-- 1. Получение всей стоимости строительства бани
 CREATE FUNCTION GetConstructionCost (p_project_id INT) 
 RETURNS FLOAT 
 DETERMINISTIC
 BEGIN
-    DECLARE total_cost FLOAT DEFAULT 0;
+    DECLARE total_cost FLOAT;
 
-    SELECT SUM(materials.price_per_piece * checks.quantity) INTO total_cost 
+    SELECT SUM(materials.price_per_piece * checks.quantity) + 
+           (SELECT price FROM project WHERE id_project = p_project_id) INTO total_cost 
     FROM materials 
     JOIN checks ON materials.id_mater = checks.materials_id 
     JOIN banya ON checks.banya_id = banya.id 
     WHERE banya.project_id = p_project_id;
 
     RETURN total_cost;
-END
+END;
 
-select GetConstructionCost(2);
-
+select banya.owner, project.price, (GetConstructionCost(2) - project.price) as cost_materials, GetConstructionCost(2) as all_sum from banya
+JOIN project ON banya.project_id = project.id_project
+where project.id_project = 2;
 
 -- 2. Подсчет количества материалов по типу
 CREATE FUNCTION CountMaterialsByType (p_type VARCHAR(255)) 
@@ -764,7 +800,6 @@ END;
 
 select CountMaterialsByType('Дерево');
 
-
 -- 3. Проверка наличия материала в магазине
 CREATE FUNCTION IsMaterialAvailable (p_material_id INT) RETURNS BOOLEAN
 DETERMINISTIC
@@ -775,27 +810,30 @@ BEGIN
     RETURN available;
 END;
 
-
 select IsMaterialAvailable(112);
 
 
--- 4. Получение списка всех архитекторов с опытом работы более N лет
-CREATE FUNCTION GetArchitectsWithExperience (p_years INT) RETURNS TABLE
+-- 4. Посчитать количество дней, когда началось строительство бани летом
+CREATE FUNCTION count_summer_construction_days(table_name VARCHAR(255)) RETURNS INT
+DETERMINISTIC
 BEGIN
-    RETURN (SELECT * FROM architect WHERE work_exp > p_years);
+    DECLARE summer_days INT;
+
+    SET @query = CONCAT('SELECT COUNT(*) INTO summer_days FROM ', table_name, ' WHERE MONTH(start_date_construction) IN (6, 7, 8)');
+    
+    PREPARE stmt FROM @query;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+
+    RETURN summer_days;
 END;
-   
 
 
--- 5. Получение информации о магазине по ID
-CREATE FUNCTION GetShopById (p_shop_id INT) RETURNS TABLE
-BEGIN
-    RETURN (SELECT * FROM shops WHERE id_store = p_shop_id);
-END;
-   
-   
--- Вопросы для гпт 
--- Основные триггеры для БД
+SELECT count_summer_construction_days('banya') AS summer_construction_days;
+
+
+-- 5. 
+
 
 -- Триггеры
 
@@ -867,7 +905,53 @@ END;
 
 -- Практическая работа №4
 
+-- Агрегатные функции
 
+-- COUNT() +
+SELECT architect.fio, COUNT(project.id_project) as CountProject 
+FROM architect JOIN project ON project.architect_service_number = architect.service_number
+GROUP BY architect.fio;
 
+-- SUM() +
+SELECT banya.owner, banya.start_date_construction, SUM(project.price) OVER (PARTITION BY banya.start_date_construction) as p
+FROM banya JOIN project ON project.id_project = banya.project_id;
 
+-- AVG() +
+SELECT banya.owner, AVG(DATEDIFF(project.plan_end_date, project.plan_start_date)) OVER (PARTITION BY banya.owner) as avg_const_time 
+FROM banya JOIN project ON project.id_project = banya.project_id;
 
+-- MIN() +
+SELECT materials.name_mater, specifications.name_spec, specifications.weight_kilo,
+MIN(specifications.weight_kilo) OVER (PARTITION BY materials.name_mater) as min_weight
+FROM materials JOIN specifications ON materials.specifications_id = specifications.id_specifications;
+
+-- MAX() +
+SELECT materials.name_mater, specifications.name_spec, materials.price_per_piece,
+MAX(materials.price_per_piece) OVER (PARTITION BY materials.name_mater) as max_price
+FROM materials JOIN specifications ON materials.specifications_id = specifications.id_specifications;
+
+-- Ранжирующие функции
+
+-- ROW_NUMBER()
+-- RANK()
+-- DENSE_RANK()
+-- NTILE()
+
+SELECT banya.owner, banya.address, banya.start_date_construction, banya.end_date_construction,
+ROW_NUMBER() OVER (ORDER BY banya.end_date_construction) AS RowNumber,
+RANK() OVER (ORDER BY banya.end_date_construction DESC) AS SalesRank,
+DENSE_RANK() OVER (ORDER BY banya.end_date_construction DESC) AS DenseRank,
+NTILE(4) OVER (ORDER BY banya.end_date_construction DESC) AS PriceGroup
+FROM banya;
+
+-- Функции смещения
+
+-- LAG() и LEAD()
+-- FIRST_VALUE() и LAST_VALUE()
+
+SELECT banya.owner, project.plan_start_date, project.plan_end_date,
+LAG(project.plan_start_date, 1) OVER (ORDER BY project.plan_start_date) AS prev_value,
+LEAD(project.plan_start_date, 1) OVER (ORDER BY project.plan_start_date) AS next_value,
+FIRST_VALUE(project.plan_start_date) OVER (ORDER BY project.plan_start_date) AS first_val,
+LAST_VALUE(project.plan_start_date) OVER (ORDER BY project.plan_start_date) AS last_val
+FROM banya JOIN project ON project.id_project = banya.project_id;

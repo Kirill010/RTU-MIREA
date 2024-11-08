@@ -947,12 +947,12 @@ FROM materials JOIN specifications ON materials.specifications_id = specificatio
 -- DENSE_RANK()
 -- NTILE()
 
-SELECT banya.owner, banya.address, banya.start_date_construction, banya.end_date_construction,
-ROW_NUMBER() OVER (ORDER BY banya.end_date_construction) AS RowNumber,
-RANK() OVER (ORDER BY banya.end_date_construction DESC) AS SalesRank,
-DENSE_RANK() OVER (ORDER BY banya.end_date_construction DESC) AS DenseRank,
-NTILE(4) OVER (ORDER BY banya.end_date_construction DESC) AS PriceGroup
-FROM banya;
+SELECT builders.fio, builders.contacts, builders.work_exp, builders.rating,
+ROW_NUMBER() OVER (ORDER BY builders.work_exp) AS RowNumber,
+RANK() OVER (ORDER BY builders.work_exp DESC) AS SalesRank,
+DENSE_RANK() OVER (ORDER BY builders.work_exp DESC) AS DenseRank,
+NTILE(4) OVER (ORDER BY builders.work_exp DESC) AS PriceGroup
+FROM builders;
 
 -- Функции смещения
 

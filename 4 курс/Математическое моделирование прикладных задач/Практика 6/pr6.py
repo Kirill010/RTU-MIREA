@@ -1,288 +1,287 @@
-"""
-Улучшённый скрипт (обновлённый):
-- поиск μ: перебор пар -> перебор троек -> MEC (Welzl)
-- безопасный подбор итерационного параметра τ (на основе μ и spectrum), fallback'ы
-- стабильная итерация с проверкой на overflow/NaN
-- один аккуратный график: Краевые точки (ordered polygon), выбранная окружность (μ,R), центр μ
-  (Спектр на графике НЕ отображается по запросу.)
-"""
 import numpy as np
 import matplotlib.pyplot as plt
-import random, math
-from typing import List, Tuple, Optional
 
-# -------------------- Геометрия: окружности --------------------
-def circle_from_2(p1: complex, p2: complex) -> Tuple[complex, float]:
+# Данные из условия
+spectrum = np.array([
+    3 - 1.1j,
+    5 - 1j,
+    4 + 4j,
+    2 + 3j,
+    1 + 1j,
+    6 + 1j
+])
+
+A = np.diag(spectrum)  # диагональная матрица
+f = np.full(len(spectrum), 1 + 2j)  # правая часть
+x0 = np.zeros_like(f)  # начальное приближение
+
+print("Матрица A (диагональная):")
+print(A)
+print("\nПравая часть f:")
+print(f)
+print("\nСпектр оператора:")
+for i, lam in enumerate(spectrum):
+    print(f"λ_{i + 1} = {lam:.3f}")
+
+
+def circle_from_2(p1, p2):
+    """Окружность по двум точкам (диаметр)"""
     c = (p1 + p2) / 2
-    return c, abs(p1 - c)
+    r = abs(p1 - c)
+    return c, r
 
-def circle_from_3(p1: complex, p2: complex, p3: complex) -> Tuple[Optional[complex], Optional[float]]:
-    x1,y1 = p1.real, p1.imag
-    x2,y2 = p2.real, p2.imag
-    x3,y3 = p3.real, p3.imag
-    M = np.array([[x1,y1,1.0],[x2,y2,1.0],[x3,y3,1.0]])
-    detM = np.linalg.det(M)
-    if abs(detM) < 1e-14:
+
+def circle_from_3(p1, p2, p3):
+    """Окружность по трем точкам"""
+    # Решаем систему: |z - c| = R для трёх точек
+    z = np.array([p1, p2, p3], dtype=complex)
+    x = z.real
+    y = z.imag
+
+    # Система уравнений для центра окружности
+    A_mat = np.array([
+        [2 * (x[1] - x[0]), 2 * (y[1] - y[0])],
+        [2 * (x[2] - x[0]), 2 * (y[2] - y[0])]
+    ])
+    b = np.array([
+        x[1] ** 2 + y[1] ** 2 - x[0] ** 2 - y[0] ** 2,
+        x[2] ** 2 + y[2] ** 2 - x[0] ** 2 - y[0] ** 2
+    ])
+
+    try:
+        cx, cy = np.linalg.solve(A_mat, b)
+        c = cx + 1j * cy
+        r = abs(p1 - c)
+        return c, r
+    except np.linalg.LinAlgError:
         return None, None
-    def sq(x,y): return x*x + y*y
-    ox = np.linalg.det(np.array([[sq(x1,y1), y1, 1.0],
-                                 [sq(x2,y2), y2, 1.0],
-                                 [sq(x3,y3), y3, 1.0]]))
-    oy = np.linalg.det(np.array([[sq(x1,y1), x1, 1.0],
-                                 [sq(x2,y2), x2, 1.0],
-                                 [sq(x3,y3), x3, 1.0]]))
-    cx = ox / (2 * detM)
-    cy = - oy / (2 * detM)
-    c = complex(cx, cy)
-    return c, abs(c - p1)
 
-def covers_all(c: complex, r: float, pts: List[complex], eps: float = 1e-12) -> bool:
+
+def covers_all(c, r, pts, eps=1e-9):
+    """Проверяет, покрывает ли окружность все точки"""
     return np.all(np.abs(np.array(pts) - c) <= r + eps)
 
-# -------------------- Минимальная охватывающая окружность (Welzl) --------------------
-def mec_welzl(points: List[complex], rng_seed: Optional[int] = None) -> Tuple[complex, float]:
-    pts = points.copy()
-    if rng_seed is not None:
-        random.seed(rng_seed)
-    random.shuffle(pts)
-    def c2(a,b): return (a+b)/2, abs(a-(a+b)/2)
-    def c3(a,b,c):
-        res = circle_from_3(a,b,c)
-        if res[0] is None:
-            # вернём окружность по наиболее удалённой паре
-            pair = (a,b); md = abs(a-b)
-            for P in (a,b,c):
-                for Q in (a,b,c):
-                    if P is Q: continue
-                    d = abs(P-Q)
-                    if d > md:
-                        md = d; pair = (P,Q)
-            return c2(*pair)
-        return res
-    def rec(sub,bound):
-        if not sub or len(bound) == 3:
-            if len(bound) == 0: return complex(0,0), -1.0
-            if len(bound) == 1: return bound[0], 0.0
-            if len(bound) == 2: return c2(bound[0], bound[1])
-            return c3(bound[0], bound[1], bound[2])
-        p = sub.pop()
-        c,r = rec(sub,bound)
-        if r >= 0 and abs(p - c) <= r + 1e-12:
-            sub.append(p); return c,r
-        bound.append(p)
-        cres = rec(sub,bound)
-        bound.pop(); sub.append(p)
-        return cres
-    return rec(pts, [])
 
-# -------------------- Генерация boundary и spectrum --------------------
-def random_boundary_points(m:int, center_range=(0,10), radius_range=(2,8),
-                           irregularity:float=0.4, prob_real:float=0.2, seed:Optional[int]=None) -> List[complex]:
-    if seed is not None:
-        np.random.seed(seed); random.seed(seed)
-    cx = np.random.uniform(center_range[0], center_range[1])
-    cy = np.random.uniform(center_range[0], center_range[1])
-    center = complex(cx, cy)
-    base_r = np.random.uniform(radius_range[0], radius_range[1])
-    angles = np.linspace(0, 2*np.pi, m, endpoint=False)
-    pts=[]
-    for theta in angles:
-        dr = irregularity * base_r * (np.random.rand() - 0.5) * 2
-        dtheta = (np.random.rand() - 0.5) * (np.pi * irregularity / max(1,m))
-        r = max(0.05, base_r + dr)
-        t = theta + dtheta
-        if np.random.rand() < prob_real:
-            x = center.real + r*math.cos(t)
-            pts.append(complex(x,0.0))
-        else:
-            pts.append(center + r*complex(math.cos(t), math.sin(t)))
-    return pts
+def find_minimal_circle(points):
+    """Находит минимальную окружность, покрывающую все точки"""
+    pts = list(points)
+    n = len(pts)
+    best_c, best_r = None, float('inf')
 
-def generate_spectrum_and_A(boundary:List[complex], n:int, interior_count:Optional[int]=None,
-                            fraction_real_interior:float=0.3, seed:Optional[int]=None) -> Tuple[np.ndarray,np.ndarray,complex,float]:
-    if seed is not None:
-        np.random.seed(seed); random.seed(seed)
-    center_b, radius_b = mec_welzl(boundary, rng_seed=seed)
-    if interior_count is None:
-        interior_count = max(0, n - len(boundary))
-    interior=[]
-    for _ in range(interior_count):
-        rr = radius_b * math.sqrt(np.random.rand())
-        theta = 2*math.pi*np.random.rand()
-        if np.random.rand() < fraction_real_interior:
-            real_part = center_b.real + rr*math.cos(theta)
-            interior.append(complex(real_part, 0.0))
-        else:
-            interior.append(center_b + rr*complex(math.cos(theta), math.sin(theta)))
-    spectrum = list(boundary) + interior
-    while len(spectrum) < n:
-        spectrum.append(random.choice(boundary))
-    spectrum = np.array(spectrum[:n], dtype=complex)
-    A = np.diag(spectrum)
-    return spectrum, A, center_b, radius_b
+    # Проверяем все пары точек (окружность с диаметром через эти точки)
+    for i in range(n):
+        for j in range(i + 1, n):
+            c, r = circle_from_2(pts[i], pts[j])
+            if r < best_r and covers_all(c, r, pts):
+                best_c, best_r = c, r
 
-# -------------------- Поиск μ: пары -> тройки -> MEC --------------------
-def search_mu(boundary:List[complex]) -> Tuple[complex,float,str]:
-    m = len(boundary)
-    # перебор пар (центр середина)
-    best=None
-    for i in range(m):
-        for j in range(i+1,m):
-            c,R = circle_from_2(boundary[i], boundary[j])
-            if covers_all(c,R,boundary):
-                if best is None or R < best[1]:
-                    best = (c,R,'pair')
-    if best is not None: return best
-    # перебор троек
-    best=None
-    for i in range(m):
-        for j in range(i+1,m):
-            for k in range(j+1,m):
-                cR = circle_from_3(boundary[i], boundary[j], boundary[k])
-                if cR[0] is None: continue
-                c,R = cR
-                if covers_all(c,R,boundary):
-                    if best is None or R < best[1]:
-                        best = (c,R,'triple')
-    if best is not None: return best
-    # иначе MEC
-    c,R = mec_welzl(boundary)
-    return c,R,'welzl'
+    # Проверяем все тройки точек
+    for i in range(n):
+        for j in range(i + 1, n):
+            for k in range(j + 1, n):
+                c, r = circle_from_3(pts[i], pts[j], pts[k])
+                if c is not None and r < best_r and covers_all(c, r, pts):
+                    best_c, best_r = c, r
 
-# -------------------- Подбор безопасного tau (используя mu) --------------------
-def choose_tau_from_mu(mu:complex, spectrum:np.ndarray) -> Tuple[complex,str]:
-    lam = spectrum
-    if abs(mu) < 1e-14:
-        tau = 0.9 / np.max(np.abs(lam))
-        return tau, 'scalar_due_to_mu_zero'
-    z = mu * lam
-    re_z = z.real
-    abs_z2 = np.abs(z)**2
-    if np.any(re_z <= 0):
-        tau = 0.9 / np.max(np.abs(lam))
-        return tau, 'scalar_fallback_re_z_nonpos'
-    beta_i = 2.0 * re_z / (abs_z2 + 1e-30)
-    beta_max = np.min(beta_i)
-    if beta_max <= 0 or not np.isfinite(beta_max):
-        tau = 0.9 / np.max(np.abs(lam))
-        return tau, 'scalar_fallback_beta_nonpos'
-    beta = 0.9 * beta_max
-    tau = beta * mu
-    return tau, 'scaled_mu'
+    # Fallback: если не нашли, берем окружность с центром в центре масс
+    if best_c is None:
+        c = np.mean(pts)
+        r = np.max(np.abs(np.array(pts) - c))
+        return c, r
 
-# -------------------- Стабильная итерация (проверка NaN/inf) --------------------
-def generalized_simple_iteration_safe(A:np.ndarray, f:np.ndarray, tau:complex, x0:Optional[np.ndarray]=None,
-                                      tol:float=1e-9, max_iter:int=5000) -> Tuple[np.ndarray,int,bool]:
-    n = A.shape[0]
-    x = np.zeros(n, dtype=complex) if x0 is None else x0.copy().astype(complex)
-    norm_f = np.linalg.norm(f)
-    if norm_f == 0: norm_f = 1.0
-    matvecs = 0
-    for k in range(max_iter):
-        Ax = A.dot(x); matvecs += 1
-        r = f - Ax
-        x_new = x + tau * r
-        if not np.isfinite(x_new).all():
-            return x_new, matvecs, False
-        if np.linalg.norm(x_new - x) / norm_f < tol:
-            return x_new, matvecs, True
+    return best_c, best_r
+
+
+def calculate_mu0_R_formula(lambda1, lambda2):
+    """Вычисляет μ₀ и R по заданной формуле"""
+    lambda1_conj = np.conj(lambda1)
+    lambda2_conj = np.conj(lambda2)
+
+    # Вычисление μ₀
+    numerator_mu = 1j * np.imag(lambda1 * lambda2_conj) * (lambda2 - lambda1)
+    denominator_mu = 2 * (np.abs(lambda1 * lambda2_conj) + np.real(lambda1 * lambda2_conj))
+    mu0 = (lambda1 + lambda2) / 2 + numerator_mu / denominator_mu
+
+    # Вычисление R
+    numerator_R = np.abs(lambda1 - lambda2) ** 2 * np.abs(lambda1_conj * lambda2)
+    denominator_R = 2 * (np.abs(lambda1_conj * lambda2) + np.real(lambda1_conj * lambda2))
+    R = np.sqrt(numerator_R / denominator_R)
+
+    return mu0, R
+
+
+def find_optimal_mu_R(spectrum):
+    """Находит оптимальные μ и R перебором всех пар точек"""
+    n = len(spectrum)
+    best_mu, best_R = None, float('inf')
+    best_pair = None
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            mu_candidate, R_candidate = calculate_mu0_R_formula(spectrum[i], spectrum[j])
+
+            # Проверяем, покрывает ли окружность все точки
+            if covers_all(mu_candidate, R_candidate, spectrum) and R_candidate < best_R:
+                best_mu, best_R = mu_candidate, R_candidate
+                best_pair = (i, j)
+
+    # Если не нашли пару, используем минимальную окружность
+    if best_mu is None:
+        return find_minimal_circle(spectrum)
+
+    print(f"Оптимальная пара: λ_{best_pair[0] + 1} и λ_{best_pair[1] + 1}")
+    return best_mu, best_R
+
+
+# Находим оптимальные μ и R
+mu, R = find_optimal_mu_R(spectrum)
+print(f"\nНайдено μ = {mu:.6f}")
+print(f"Найдено R = {R:.6f}")
+
+
+# Обобщенный метод простой итерации
+def generalized_iteration_method(A, f, mu, x0, tol=1e-8, max_iter=1000):
+    """
+    x_{k+1} = x_k - (1/μ)*(A*x_k - f)
+    """
+    n = len(f)
+    x = x0.copy()
+
+    print(f"\nЗапуск обобщенного метода простой итерации:")
+    print(f"μ = {mu:.6f}")
+    print(f"Допуск: {tol}")
+    print(f"Максимальное число итераций: {max_iter}")
+
+    for it in range(max_iter):
+        residual = A @ x - f
+
+        # Итерационная формула: x_{k+1} = x_k - (1/μ)*(A*x_k - f)
+        x_new = x - (1 / mu) * residual
+
+        # Критерий остановки
+        norm_residual = np.linalg.norm(residual)
+        norm_diff = np.linalg.norm(x_new - x)
+
+        if it % 100 == 0:
+            print(f"Итерация {it:4d}: невязка = {norm_residual:.2e}")
+
+        if norm_residual < tol:
+            print(f"\nСходимость достигнута за {it + 1} итераций")
+            print(f"Финальная невязка: {norm_residual:.2e}")
+            return x_new, it + 1, True
+
         x = x_new
-    return x, matvecs, False
 
-# -------------------- Визуализация: сортировка по углу --------------------
-def sort_by_angle(pts:List[complex], center:complex) -> np.ndarray:
-    arr = np.array(pts, dtype=complex)
-    ang = np.angle(arr - center)
-    return arr[np.argsort(ang)]
+    print(f"\nДостигнуто максимальное число итераций ({max_iter})")
+    final_residual = np.linalg.norm(A @ x - f)
+    print(f"Финальная невязка: {final_residual:.2e}")
+    return x, max_iter, False
 
-# -------------------- main --------------------
-def main():
-    # Параметры
-    random_seed = None     # None -> каждый запуск разный; число -> воспроизводимость
-    m_boundary = 6
-    n = 500
 
-    # Генерация краевых точек и спектра (спектр не будет рисоваться по требованию)
-    boundary = random_boundary_points(m_boundary, center_range=(0,12), radius_range=(2,8),
-                                      irregularity=0.5, prob_real=0.25, seed=random_seed)
-    spectrum, A, center_b, radius_b = generate_spectrum_and_A(boundary, n, interior_count=None,
-                                                              fraction_real_interior=0.35, seed=random_seed)
+# Решаем СЛАУ
+solution, iterations, converged = generalized_iteration_method(A, f, mu, x0)
 
-    # Проверка на ноль в спектре
-    if np.any(np.isclose(spectrum, 0.0, atol=1e-14)):
-        raise RuntimeError("Спектр содержит значение, близкое к нулю. Итерационный метод не гарантирован.")
+# Проверка решения
+print(f"\nПроверка решения:")
+residual = A @ solution - f
+residual_norm = np.linalg.norm(residual)
+print(f"Норма невязки A*x - f: {residual_norm:.2e}")
 
-    # Поиск mu
-    mu_candidate, R_candidate, method_mu = search_mu(boundary)
-    print("Метод поиска μ:", method_mu)
-    print("Кандидат μ:", mu_candidate, "R:", R_candidate)
+# Сравнение с точным решением (для диагональной матрицы)
+exact_solution = f / spectrum
+print(f"\nТочное решение (для диагональной матрицы):")
+error = np.linalg.norm(solution - exact_solution)
+print(f"Ошибка по сравнению с точным решением: {error:.2e}")
 
-    # Если окружность не покрывает весь spectrum — берём MEC по spectrum
-    max_dist_spec = np.max(np.abs(spectrum - mu_candidate))
-    if max_dist_spec > R_candidate + 1e-12:
-        print("Кандидат не покрывает весь спектр, берём MEC по всему спектру.")
-        mu_candidate, R_candidate = mec_welzl(list(spectrum), rng_seed=random_seed)
-        method_mu = 'mec_all_spectrum'
-        print("MEC (по всем точкам):", mu_candidate, R_candidate)
 
-    # Если μ близко к нулю — fallback на MEC по всему спектру
-    if abs(mu_candidate) < 1e-14:
-        mu_candidate, R_candidate = mec_welzl(list(spectrum), rng_seed=random_seed)
-        method_mu = 'mec_fallback'
-        print("μ был ~0 — использован запасной MEC:", mu_candidate, R_candidate)
+# Визуализация
+def visualize_spectrum(spectrum, mu, R):
+    plt.figure(figsize=(10, 8))
 
-    # Подбор τ
-    tau, tau_method = choose_tau_from_mu(mu_candidate, spectrum)
-    print("Метод выбора τ:", tau_method)
-    print("τ (используется):", tau)
+    # Спектр
+    plt.scatter(spectrum.real, spectrum.imag,
+                c='black',
+                s=150,
+                linewidth=1.5,
+                zorder=10,
+                marker='o')
 
-    # Правый вектор f по заданию
-    N = A.shape[0]
-    f = 1j * np.arange(1, N+1, dtype=float)
+    angles = np.angle(spectrum - mu)
+    order = np.argsort(angles)
+    ordered_pts = spectrum[order]
+    xs = np.append(ordered_pts.real, ordered_pts.real[0])
+    ys = np.append(ordered_pts.imag, ordered_pts.imag[0])
+    plt.plot(xs, ys, color='black', linestyle='--', linewidth=1.2,
+             alpha=0.8, zorder=3, label='Многоугольник спектра')
 
-    # Запуск итераций
-    x0 = np.zeros(N, dtype=complex)
-    x_sol, matvecs, converged = generalized_simple_iteration_safe(A, f, tau, x0=x0, tol=1e-9, max_iter=5000)
-    if not converged:
-        print("Основной τ не сошелся — пробуем безопасный скаляр τ.")
-        tau_safe = 0.9 / np.max(np.abs(spectrum))
-        x_sol, matvecs, converged = generalized_simple_iteration_safe(A, f, tau_safe, x0=x0, tol=1e-9, max_iter=5000)
-        tau = tau_safe
+    theta = np.linspace(0, 2 * np.pi, 400)
+    circle_x = mu.real + R * np.cos(theta)
+    circle_y = mu.imag + R * np.sin(theta)
+    plt.plot(circle_x, circle_y,
+             color='blue',
+             linewidth=3,
+             linestyle='-',
+             alpha=0.9,
+             label=f'Оптим. окружность ($R = {R:.3f}$)')
 
-    final_res = np.linalg.norm(f - A.dot(x_sol))
-    print("Итоговое μ:", mu_candidate, "R:", R_candidate, "метод μ:", method_mu)
-    print("Итоговый τ:", tau, "сошлось:", converged, "умножений A@x:", matvecs)
-    print("Финальная невязка ||f - A x||:", final_res, "||x||:", np.linalg.norm(x_sol))
+    # Центр
+    plt.scatter([mu.real], [mu.imag],
+                c='red',
+                s=220,
+                edgecolors='black',
+                linewidth=0.8,
+                zorder=15,
+                label=f'Оптим. центр $\\mu = {mu:.3f}$')
+    plt.text(mu.real + 0.2, mu.imag + 0.2,
+             '$\\mu$',
+             fontsize=16,
+             fontweight='bold',
+             color='tab:red',
+             ha='left', va='bottom')
 
-    # --- Визуализация (без спектра; подписи на русском) ---
-    bp_sorted = sort_by_angle(boundary, mu_candidate)
-    fig, ax = plt.subplots(figsize=(8,8))
-    ax.set_aspect('equal','box')
+    # Оси и сетка
+    plt.axhline(0, color='gray', linewidth=0.8, zorder=1)
+    plt.axvline(0, color='gray', linewidth=0.8, zorder=1)
+    plt.grid(True, which='both',
+             linestyle='--',
+             linewidth=0.7,
+             alpha=0.7,
+             color='gray')
 
-    # краевые точки
-    bp = np.array(boundary, dtype=complex)
-    ax.scatter(bp.real, bp.imag, color='black', s=70, zorder=5, label='Краевые точки')
+    # Пропорции и границы
+    plt.gca().set_aspect('equal')
+    margin = R * 0.2
+    plt.xlim(mu.real - R - margin, mu.real + R + margin)
+    plt.ylim(mu.imag - R - margin, mu.imag + R + margin)
 
-    # упорядоченный многоугольник границы
-    ax.plot(np.append(bp_sorted.real, bp_sorted.real[0]), np.append(bp_sorted.imag, bp_sorted.imag[0]),
-            color='gray', linestyle='-', linewidth=1, label='Многоугольник границы (упорядоченный)')
+    # Оформление
+    plt.xlabel('Re', fontsize=14)
+    plt.ylabel('Im', fontsize=14)
+    plt.title('Обобщенный метод простой итерации', fontsize=16, pad=20)
 
-    # выбранная окружность (mu,R)
-    th = np.linspace(0,2*np.pi,400)
-    ax.plot(mu_candidate.real + R_candidate*np.cos(th), mu_candidate.imag + R_candidate*np.sin(th),
-            color='blue', linewidth=2, label='Выбранная окружность (μ, R)')
+    # Легенда
+    plt.legend(loc='upper left',
+               fontsize=8,
+               frameon=True,
+               fancybox=True,
+               shadow=True,
+               framealpha=0.95,
+               edgecolor='darkgray')
 
-    # центр μ
-    ax.scatter([mu_candidate.real],[mu_candidate.imag], color='red', s=120, zorder=8, label='μ (центр)')
+    plt.tight_layout()
+    plt.show()
 
-    # начало координат
-    ax.scatter([0.0],[0.0], color='green', s=80, label='Начало координат')
 
-    ax.set_xlabel("Re(λ) — действительная часть")
-    ax.set_ylabel("Im(λ) — мнимая часть")
-    ax.set_title("Краевые точки, выбранная окружность и центр μ")
-    ax.grid(True); ax.legend(loc='upper right')
-    plt.tight_layout(); plt.show()
+# Визуализируем результаты
+visualize_spectrum(spectrum, mu, R)
 
-if __name__ == "__main__":
-    main()
+# print(f"Центр окружности μ: {mu:.6f}")
+# print(f"Радиус R: {R:.6f}")
+# print(f"Спектральный радиус: {R / abs(mu):.6f}")
+# print(f"Число итераций: {iterations}")
+# print(f"Сошелся: {'Да' if converged else 'Нет'}")
+
+# for i, xi in enumerate(solution):
+#     print(i, xi)
+# print()
+# print(solution)

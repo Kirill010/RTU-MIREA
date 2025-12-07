@@ -1,4 +1,0 @@
-model_id;horizon_hours;best_model_name;accuracy;precision;recall;f1_score;roc_auc
-0;2;GradientBoosting;0,8994;0,9073;0,9139;0,9105;0,9652
-1;4;GradientBoosting;0,8319;0,8355;0,872;0,8533;0,914
-2;6;GradientBoosting;0,7904;0,7934;0,8458;0,8187;0,8734

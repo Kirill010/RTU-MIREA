@@ -386,7 +386,7 @@ best_model = None
 best_r2_test = -np.inf
 
 for name, model in models.items():
-    print(f"\nTraining: {name}")
+    print(f"\nОбучение: {name}")
     if name in ['Ridge (L2)', 'Lasso (L1)']:
         model.fit(X_train_scaled, y_train)
         y_pred_train = model.predict(X_train_scaled)

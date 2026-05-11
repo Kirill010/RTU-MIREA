@@ -15,6 +15,7 @@ import pandas as pd
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 from sklearn.metrics import mean_absolute_error, r2_score, mean_absolute_percentage_error
 from sklearn.preprocessing import StandardScaler
@@ -116,6 +117,10 @@ df = pd.merge_asof(
     direction='backward', tolerance=pd.Timedelta('365D')
 )
 df = df.rename(columns={'value': 'market_value'})
+
+# Запомним долю пропусков market_value до заполнения
+market_missing_pct = df['market_value'].isna().mean() * 100
+
 df['has_market_value'] = df['market_value'].notna()
 df['temp_age_group'] = pd.cut(df['age'], bins=[0, 22, 27, 32, 100], labels=['young', 'prime', 'peak', 'veteran'])
 
@@ -171,6 +176,9 @@ stats_df = pd.DataFrame(stats)
 for col in stats_df.columns:
     df[f'{col}_last_2y'] = stats_df[col]
 
+# Доля пропусков игровой статистики (отсутствие данных за 2 сезона)
+game_stats_missing_pct = (missing_stats / len(df)) * 100
+
 player_injuries['from_date'] = pd.to_datetime(player_injuries['from_date'], errors='coerce')
 injury_stats = []
 for idx, row in df.iterrows():
@@ -180,6 +188,9 @@ for idx, row in df.iterrows():
     ]
     injury_stats.append(inj['days_missed'].sum())
 df['injury_days'] = injury_stats
+
+# Доля пропусков для injury_days (всегда заполнено, но покажем NaN процент)
+injury_missing_pct = df['injury_days'].isna().mean() * 100
 
 # Национальная сборная
 agg_dict_national = {'goals': 'sum'}
@@ -192,9 +203,35 @@ national_agg = player_national.groupby('player_id').agg(agg_dict_national).reset
 rename_dict = {col: f'national_{col}' if col != 'goals' else 'national_goals' for col in agg_dict_national.keys()}
 national_agg = national_agg.rename(columns=rename_dict)
 df = df.merge(national_agg, on='player_id', how='left')
+
+# Доля пропусков national_goals до заполнения
+national_missing_pct = df['national_goals'].isna().mean() * 100
+
 for col in rename_dict.values():
     if col in df.columns:
         df[col] = df[col].fillna(0)
+
+missing_table = pd.DataFrame({
+    'Признак': [
+        'market_value',
+        'injury_days',
+        'national_goals',
+        'Игровая статистика (нет данных за 2 сезона)'
+    ],
+    'Доля пропусков, %': [
+        f"{market_missing_pct:.1f}",
+        f"{injury_missing_pct:.1f}",
+        f"{national_missing_pct:.1f}",
+        f"{game_stats_missing_pct:.1f}"
+    ],
+    'Метод заполнения': [
+        'Медиана по группе (позиция + возраст)',
+        '0 (отсутствие травм)',
+        '0 (не играл за сборную)',
+        '0 (нет статистики)'
+    ]
+})
+print(missing_table.to_string(index=False))
 
 # Распределение по возрасту
 plt.figure(figsize=(12,6))
@@ -217,7 +254,7 @@ colors = plt.cm.Set3(np.linspace(0, 1, len(position_counts)))
 plt.barh(position_counts.index, position_counts.values, color=colors)
 plt.xlabel('Количество игроков')
 plt.title('Распределение по позициям')
-plt.grid(True, alpha=0.3, axis='x')
+plt.grid(True, alpha=0.3)
 plt.tight_layout()
 plt.show()
 
@@ -225,11 +262,11 @@ fig, ax = plt.subplots(figsize=(8, 6))
 
 # Распределение стоимости трансферов
 fee_millions = df['transfer_fee'] / 1_000_000
-ax.hist(fee_millions, bins=50, color='coral', edgecolor='black', alpha=0.7)
+ax.hist(fee_millions, bins=30, color='coral', edgecolor='black', alpha=0.7)
 ax.set_xlabel('Сумма трансфера (млн €)')
 ax.set_ylabel('Частота')
 ax.set_title('Распределение сумм трансферов')
-ax.set_xlim([0, 50])
+ax.set_xlim([0, 100])
 ax.grid(True, alpha=0.3)
 
 
@@ -243,7 +280,7 @@ ax.hist(np.log1p(df['transfer_fee']), bins=30, color='darkred', edgecolor='black
 ax.set_xlabel('log(Сумма)')
 ax.set_ylabel('Количество переходов')
 ax.set_title('Лог-распределение')
-ax.grid(True, alpha=0.1)
+ax.grid(True, alpha=0.3)
 
 plt.tight_layout()
 plt.show()
@@ -261,26 +298,44 @@ plt.grid(True, alpha=0.3)
 plt.tight_layout()
 plt.show()
 
-# Динамика по сезонам
-season_stats = df.groupby('season_year').agg({'transfer_fee': ['mean', 'median', 'count']}).round(0)
+# Динамика стоимости по сезонам
+season_stats = df.groupby('season_year').agg({
+    'transfer_fee': ['mean', 'median', 'count']
+}).round(0)
 season_stats.columns = ['mean_fee', 'median_fee', 'count']
 season_stats = season_stats[(season_stats.index >= 1985) & (season_stats.index <= 2025)]
 
+# Основной график стоимости
 fig, ax = plt.subplots(figsize=(10,6))
-ax.plot(season_stats.index, season_stats['mean_fee'] / 1_000_000, marker='o', linewidth=2, markersize=6, color='blue', label='Mean fee')
-ax.plot(season_stats.index, season_stats['median_fee'] / 1_000_000, marker='s', linewidth=2, markersize=6, color='red', label='Median fee')
+ax.plot(season_stats.index, season_stats['mean_fee'] / 1_000_000, marker='o', linewidth=2, markersize=6, color='blue', label='Средняя стоимость')
+ax.plot(season_stats.index, season_stats['median_fee'] / 1_000_000, marker='s', linewidth=2, markersize=6, color='red', label='Медианная стоимость')
 ax.set_xlabel('Сезон')
 ax.set_ylabel('Стоимость (млн €)')
 ax.set_title('Динамика стоимости трансферов по сезонам')
 ax.grid(True, alpha=0.3)
 ax.legend(loc='upper left')
 
+# Вторая ось для количества трансферов
 ax2 = ax.twinx()
-ax2.bar(season_stats.index, season_stats['count'], alpha=0.4, color='lime', width=0.5, label='Number of transfers')
+ax2.bar(season_stats.index, season_stats['count'], alpha=0.4, color='lime', width=0.5, label='Количество трансферов')
 ax2.set_ylabel('Количество трансферов')
 ax2.legend(loc='upper right')
 plt.tight_layout()
 plt.show()
+
+df.columns
+
+Q1 = df['transfer_fee'].quantile(0.25)
+Q3 = df['transfer_fee'].quantile(0.75)
+IQR = Q3 - Q1
+
+# Определение границ выбросов
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+
+# Обнаружение выбросов
+outliers_iqr = df[(df['transfer_fee'] < lower_bound) | (df['transfer_fee'] > upper_bound)]
+print(f"Выбросы (IQR): {outliers_iqr}")
 
 performance_cols = [col for col in df.columns if col.endswith('_last_2y')]
 df['position_simple'] = df['position'].fillna('Unknown').apply(lambda x: x.split('-')[0] if pd.notna(x) and '-' in str(x) else str(x))
@@ -312,6 +367,30 @@ for col in available_features:
             df_model[col] = df_model[col].fillna(mode_val)
 
 print(f"Финальный размер датасет: {len(df_model)} записей, {len(available_features)} признаков")
+
+corr_with_target = df.corr(numeric_only=True)['transfer_fee'].drop('transfer_fee').sort_values(ascending=False)
+print("Корреляция признаков с целевой переменной:")
+print(corr_with_target)
+
+top_features = corr_with_target.abs().nlargest(8).index.tolist()
+# Добавим саму целевую переменную
+features_for_heatmap = top_features + ['transfer_fee']
+
+# Матрица корреляций (DataFrame) для выбранных признаков
+corr_matrix = df[features_for_heatmap].corr()
+
+plt.figure(figsize=(10, 8))
+sns.heatmap(corr_matrix,
+            annot=True,
+            cmap='coolwarm',
+            vmin=-1, vmax=1,
+            linewidths=0.5,
+            fmt='.2f')
+plt.title('Матрица корреляции', fontsize=14)
+plt.xticks(rotation=45, ha='right')
+plt.yticks(rotation=0)
+plt.tight_layout()
+plt.show()
 
 train = df_model[df_model['transfer_date'].dt.year <= 2021]
 test = df_model[df_model['transfer_date'].dt.year > 2021]
